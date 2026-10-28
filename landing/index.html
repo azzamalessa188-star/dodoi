@@ -1,0 +1,707 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#080a06" />
+    <meta
+      name="description"
+      content="Dodoi is a floating AI translator for every app. Summon it with a shortcut, translate with the cloud or fully offline, and paste the result back without losing your place."
+    />
+    <meta property="og:title" content="Dodoi — Speak freely. Everywhere." />
+    <meta
+      property="og:description"
+      content="A floating AI translator that lives above every app. One shortcut, any language, back to what you were doing."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="assets/shots/overlay.png" />
+    <title>Dodoi — Speak freely. Everywhere.</title>
+    <link rel="icon" type="image/png" href="assets/icon.png" />
+    <link rel="preload" href="assets/fonts/Inter-Variable.woff2" as="font" type="font/woff2" crossorigin />
+    <link
+      rel="preload"
+      href="assets/fonts/SpaceGrotesk-Variable.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link rel="preload" href="assets/fonts/NotoSansJP-1.woff2" as="font" type="font/woff2" crossorigin />
+    <script>
+      document.documentElement.classList.add('js')
+    </script>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <svg class="svg-defs" aria-hidden="true">
+      <defs>
+        <linearGradient id="mark-gradient" x1="3" y1="3" x2="29" y2="29">
+          <stop stop-color="#e2ff9b" />
+          <stop offset="1" stop-color="#a8e857" />
+        </linearGradient>
+        <linearGradient id="orbit-gradient" x1="0" y1="0" x2="1" y2="1">
+          <stop stop-color="#c9f76f" stop-opacity=".7" />
+          <stop offset=".55" stop-color="#c9f76f" stop-opacity=".08" />
+          <stop offset="1" stop-color="#e8ad6a" stop-opacity=".32" />
+        </linearGradient>
+      </defs>
+      <symbol id="dodoi-mark" viewBox="0 0 32 32">
+        <rect x="1" y="1" width="30" height="30" rx="9" fill="url(#mark-gradient)" />
+        <path
+          d="M7.8 12.4h15.1m0 0-3.4-3.4m3.4 3.4-3.4 3.4M24.2 19.6H9.1m0 0 3.4-3.4m-3.4 3.4 3.4 3.4"
+          stroke="#151a0f"
+          stroke-width="1.9"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </symbol>
+    </svg>
+
+    <div class="ambient" aria-hidden="true">
+      <div class="ambient-glow ambient-glow-lime"></div>
+      <div class="ambient-glow ambient-glow-amber"></div>
+      <div class="ambient-glow ambient-glow-deep"></div>
+      <div class="ambient-grid"></div>
+      <div class="ambient-noise"></div>
+      <div class="pointer-glow" id="pointerGlow"></div>
+    </div>
+
+    <header class="site-header" id="siteHeader">
+      <div class="shell header-inner">
+        <a class="brand" href="#top" aria-label="Dodoi home">
+          <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><use href="#dodoi-mark"></use></svg>
+          <span class="brand-copy">
+            <span class="brand-name">Dodoi</span>
+            <span class="brand-tagline">AI translator</span>
+          </span>
+        </a>
+
+        <button
+          class="menu-toggle"
+          id="menuToggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="siteNav"
+          aria-label="Open navigation"
+        >
+          <span></span>
+          <span></span>
+        </button>
+
+        <nav class="site-nav" id="siteNav" aria-label="Primary navigation">
+          <a href="#features">Features</a>
+          <a href="#offline">Offline</a>
+          <a href="#product">A closer look</a>
+          <a href="#how">How it works</a>
+        </nav>
+
+        <div class="header-actions">
+          <a class="icon-link" href="https://github.com/azzamalessa188-star/dodoi" target="_blank" rel="noreferrer">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                fill="currentColor"
+                d="M12 2C6.48 2 2 6.58 2 12.2c0 4.5 2.87 8.32 6.84 9.67.5.1.68-.22.68-.49 0-.24-.01-1.05-.01-1.9-2.78.62-3.37-1.2-3.37-1.2-.45-1.18-1.11-1.5-1.11-1.5-.91-.64.07-.62.07-.62 1 .07 1.53 1.05 1.53 1.05.9 1.56 2.35 1.11 2.92.85.09-.66.35-1.11.63-1.37-2.22-.26-4.56-1.14-4.56-5.07 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.3.1-2.7 0 0 .84-.28 2.75 1.05A9.38 9.38 0 0 1 12 6.84c.85 0 1.71.12 2.51.35 1.9-1.33 2.74-1.05 2.74-1.05.55 1.4.2 2.44.1 2.7.64.72 1.03 1.63 1.03 2.75 0 3.94-2.34 4.8-4.57 5.06.36.32.68.94.68 1.9 0 1.37-.01 2.47-.01 2.8 0 .27.18.6.69.49A10.2 10.2 0 0 0 22 12.2C22 6.58 17.52 2 12 2Z"
+              />
+            </svg>
+            <span>GitHub</span>
+          </a>
+          <a class="button button-small" href="#download">
+            Get Dodoi
+            <svg viewBox="0 0 16 16" aria-hidden="true">
+              <path d="M3 8h9m0 0-3.4-3.4M12 8l-3.4 3.4" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="hero" id="top" aria-labelledby="hero-title">
+        <div class="shell hero-grid">
+          <div class="hero-copy">
+            <p class="eyebrow reveal">
+              <span class="eyebrow-dot"></span>
+              A floating AI translator for every app
+            </p>
+            <h1 class="reveal" id="hero-title" style="--delay: 60ms">
+              Speak freely.
+              <span class="gradient-text">Everywhere.</span>
+            </h1>
+            <p class="hero-lead reveal" style="--delay: 120ms">
+              Dodoi floats above your work. One shortcut, any language, and the right words are back in the
+              app you were using — before the thought escapes.
+            </p>
+            <div class="hero-actions reveal" style="--delay: 180ms">
+              <a class="button" href="#download">
+                Get Dodoi
+                <svg viewBox="0 0 16 16" aria-hidden="true">
+                  <path d="M3 8h9m0 0-3.4-3.4M12 8l-3.4 3.4" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </a>
+              <button class="button button-ghost summon-trigger" type="button">
+                <span class="keycap-group" aria-hidden="true">
+                  <kbd>Shift</kbd><kbd>~</kbd>
+                </span>
+                <span>Try the shortcut</span>
+              </button>
+            </div>
+            <div class="hero-meta reveal" style="--delay: 240ms">
+              <span class="meta-item">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path fill="currentColor" d="M3 4.5h8.7v6.8H3V4.5Zm9.3 0H21v6.8h-8.7V4.5ZM3 12h8.7v7.5H3V12Zm9.3 0H21v7.5h-8.7V12Z" opacity=".8" />
+                </svg>
+                Windows
+              </span>
+              <span class="meta-item">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path fill="currentColor" d="M16.3 12.9c0-2 1.6-3 1.7-3.1-.9-1.3-2.3-1.5-2.8-1.5-1.2-.1-2.3.7-2.9.7-.6 0-1.5-.7-2.5-.7-1.3 0-2.5.8-3.2 2-1.3 2.2-.3 5.5 1 7.3.6.9 1.3 1.9 2.2 1.9.9 0 1.2-.6 2.3-.6s1.4.6 2.3.6c1 0 1.6-.9 2.2-1.8.7-1 1-2 1-2.1-.1 0-2.3-.9-2.3-2.7ZM14.4 7.2c.5-.6.8-1.4.7-2.2-.7 0-1.6.5-2.1 1.1-.5.5-.9 1.4-.8 2.2.8.1 1.6-.4 2.2-1.1Z" />
+                </svg>
+                macOS
+              </span>
+              <span class="meta-item">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path fill="currentColor" d="M12 3.2c2.3 0 4.2 1 5.2 1.8l1.2-1v3.4c-.2 0-.8-.2-1.4-.2-1.4 0-2.4.5-2.9.8v4h3.4c.2 0 .4.2.4.4l-.6 2.1c0 .2-.2.3-.4.3h-3v6.1c-.6.1-1.2.2-1.9.2s-1.3-.1-1.9-.2v-6.1h-3c-.2 0-.3-.1-.4-.3l-.6-2.1c0-.2.1-.4.4-.4h3.5v-4c-.5-.3-1.5-.8-2.9-.8-.6 0-1.2.2-1.4.2V4l1.2 1C7.8 4.2 9.7 3.2 12 3.2Z" />
+                </svg>
+                Linux
+              </span>
+              <span class="meta-separator"></span>
+              <span class="meta-note">
+                <span class="pulse-dot"></span>
+                Open source · v0.1.0
+              </span>
+            </div>
+          </div>
+
+          <div class="hero-visual reveal" style="--delay: 160ms">
+            <div class="hero-orbit" aria-hidden="true">
+              <div class="orbit-ring orbit-ring-one"></div>
+              <div class="orbit-ring orbit-ring-two"></div>
+              <span class="orbit-node orbit-node-one"></span>
+              <span class="orbit-node orbit-node-two"></span>
+              <span class="orbit-node orbit-node-three"></span>
+            </div>
+
+            <div class="floating-chip chip-local" aria-hidden="true">
+              <span class="chip-icon chip-icon-lime">
+                <svg viewBox="0 0 20 20"><path d="M10 3.2a6.8 6.8 0 1 0 0 13.6 6.8 6.8 0 0 0 0-13.6Zm0 1.4c1 1.2 1.7 2.8 2 4.4H8c.3-1.6 1-3.2 2-4.4Zm-3.4 5.8h6.8c-.2 1.5-.7 2.8-1.3 3.8H7.9c-.6-1-1.1-2.3-1.3-3.8Zm-1.4 0H4.1c.3-1.5 1.1-2.8 2.3-3.7-.4.8-.7 1.9-.9 3.1l-.3.6Zm0 1.4.2.6c.2 1.2.5 2.2.9 3.1a5.4 5.4 0 0 1-3.2-3.7h2.1Zm9.1-1.4c-.2-1.2-.5-2.3-.9-3.1a5.5 5.5 0 0 1 2.3 3.7h-2.1l.7-.6Zm0 1.4h2.1a5.4 5.4 0 0 1-3.2 3.7c.4-.9.7-1.9.9-3.1l.2-.6Z" fill="currentColor"/></svg>
+              </span>
+              <span>33 languages</span>
+            </div>
+
+            <div class="floating-chip chip-model" aria-hidden="true">
+              <span class="status-dot"></span>
+              <span>Local model ready</span>
+            </div>
+
+            <div class="floating-chip chip-shortcut" aria-hidden="true">
+              <span class="keycap-group"><kbd>Shift</kbd><kbd>~</kbd></span>
+              <span>to summon</span>
+            </div>
+
+            <article class="translator-panel glass tilt" id="heroDemo" aria-label="Interactive Dodoi preview">
+              <div class="panel-sheen" aria-hidden="true"></div>
+              <header class="panel-header">
+                <div class="panel-brand">
+                  <svg class="panel-mark" viewBox="0 0 32 32" aria-hidden="true"><use href="#dodoi-mark"></use></svg>
+                  <div>
+                    <span class="panel-name">Dodoi</span>
+                    <span class="panel-tagline">AI translator</span>
+                  </div>
+                </div>
+                <div class="panel-status">
+                  <span class="status-dot"></span>
+                  <span id="heroStatus">Ready</span>
+                </div>
+              </header>
+
+              <div class="panel-body">
+                <div class="field-label">
+                  <span>From any app</span>
+                  <span class="field-hint">Auto-detect</span>
+                </div>
+                <div class="hero-source">
+                  <span class="typed-text" id="heroSource">The right words, right where you are.</span>
+                  <span class="text-caret" aria-hidden="true"></span>
+                </div>
+
+                <div class="translation-rule">
+                  <span class="rule-line"></span>
+                  <span class="rule-label">
+                    <span class="live-dot"></span>
+                    <span id="heroTargetLabel">Japanese</span>
+                  </span>
+                  <span class="rule-line"></span>
+                </div>
+
+                <div class="hero-result-wrap">
+                  <span class="result-kicker">Translation</span>
+                  <p class="hero-result" id="heroResult" lang="ja" dir="ltr" aria-live="polite">あなたのいる場所に、ふさわしい言葉を。</p>
+                </div>
+              </div>
+
+              <footer class="panel-footer">
+                <div class="language-flow">
+                  <span class="language-pulse"></span>
+                  <span>Auto-detect</span>
+                  <svg class="flow-arrow" viewBox="0 0 18 18" aria-hidden="true">
+                    <path d="M3.5 9h10.2m0 0-3.3-3.3M13.7 9l-3.3 3.3" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                  <button class="target-chip" id="heroLanguage" type="button" aria-label="Change preview language">
+                    <span id="heroTarget">Japanese</span>
+                    <svg viewBox="0 0 12 12" aria-hidden="true"><path d="m3 4.5 3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" /></svg>
+                  </button>
+                </div>
+                <button class="translate-button" id="heroTranslate" type="button">
+                  <span id="heroTranslateLabel">Translate</span>
+                  <span class="button-shortcut"><kbd>Ctrl</kbd><kbd>↵</kbd></span>
+                </button>
+              </footer>
+            </article>
+
+            <div class="hero-caption" aria-hidden="true">
+              <span class="caption-line"></span>
+              <span>Live preview</span>
+            </div>
+          </div>
+        </div>
+
+        <a class="scroll-cue" href="#features" aria-label="Scroll to features">
+          <span>See what's inside</span>
+          <span class="scroll-cue-track"><span></span></span>
+        </a>
+      </section>
+
+      <section class="marquee-section" aria-label="Dodoi in many languages">
+        <div class="marquee-fade" aria-hidden="true"></div>
+        <p class="marquee-label"><span class="pulse-dot"></span> One shortcut · thirty-three languages</p>
+        <div class="marquee">
+          <div class="marquee-track">
+            <span>Hello</span><i></i><span>こんにちは</span><i></i><span>Hola</span><i></i><span>Bonjour</span><i></i><span>مرحبا</span><i></i><span>안녕하세요</span><i></i><span>Ciao</span><i></i><span>Hallo</span><i></i><span>Olá</span><i></i><span>Привет</span><i></i><span>你好</span><i></i><span>Merhaba</span><i></i>
+            <span aria-hidden="true">Hello</span><i aria-hidden="true"></i><span aria-hidden="true">こんにちは</span><i aria-hidden="true"></i><span aria-hidden="true">Hola</span><i aria-hidden="true"></i><span aria-hidden="true">Bonjour</span><i aria-hidden="true"></i><span aria-hidden="true">مرحبا</span><i aria-hidden="true"></i><span aria-hidden="true">안녕하세요</span><i aria-hidden="true"></i><span aria-hidden="true">Ciao</span><i aria-hidden="true"></i><span aria-hidden="true">Hallo</span><i aria-hidden="true"></i><span aria-hidden="true">Olá</span><i aria-hidden="true"></i><span aria-hidden="true">Привет</span><i aria-hidden="true"></i><span aria-hidden="true">你好</span><i aria-hidden="true"></i><span aria-hidden="true">Merhaba</span><i aria-hidden="true"></i>
+          </div>
+        </div>
+      </section>
+
+      <section class="section features" id="features" aria-labelledby="features-title">
+        <div class="shell">
+          <div class="section-head reveal">
+            <p class="eyebrow"><span class="eyebrow-dot"></span> Why Dodoi</p>
+            <h2 id="features-title">Small window.<br /><span class="soft-text">Serious range.</span></h2>
+            <p class="section-lead">
+              Everything you need to translate in flow, and nothing that pulls you out of it.
+            </p>
+          </div>
+
+          <div class="bento">
+            <article class="feature-card feature-shortcut tilt reveal" style="--delay: 0ms">
+              <div class="feature-copy">
+                <span class="feature-index">01</span>
+                <h3>Summon it. Anywhere.</h3>
+                <p>
+                  A global shortcut opens Dodoi above the app you're already in. No alt-tabbing, no tabs,
+                  no lost place.
+                </p>
+                <button class="text-button summon-trigger" type="button">
+                  Try it now
+                  <span class="keycap-group"><kbd>Shift</kbd><kbd>~</kbd></span>
+                </button>
+              </div>
+              <div class="shortcut-visual" aria-hidden="true">
+                <div class="keyboard">
+                  <span class="key key-wide">Shift</span>
+                  <span class="key key-accent">~</span>
+                  <span class="key">A</span>
+                  <span class="key">S</span>
+                  <span class="key">D</span>
+                </div>
+                <div class="shortcut-beam"></div>
+                <div class="mini-overlay">
+                  <span class="mini-mark"><svg viewBox="0 0 32 32"><use href="#dodoi-mark"></use></svg></span>
+                  <span class="mini-line"></span>
+                  <span class="mini-cursor"></span>
+                </div>
+              </div>
+            </article>
+
+            <article class="feature-card feature-switch reveal" style="--delay: 70ms">
+              <span class="feature-index">02</span>
+              <h3>Cloud. Local. Your call.</h3>
+              <p>
+                Use any OpenAI-compatible provider, or switch to the built-in NLLB-200 engine and keep every
+                word on your machine.
+              </p>
+              <div class="switch-demo" data-switch-demo>
+                <div class="switch-labels">
+                  <span class="is-active" data-mode-label="cloud">Cloud</span>
+                  <span data-mode-label="local">Local</span>
+                </div>
+                <button class="switch" type="button" role="switch" aria-checked="false" aria-label="Toggle local engine preview">
+                  <span class="switch-knob"></span>
+                </button>
+                <p class="switch-caption" data-switch-caption>OpenRouter · auto-routed</p>
+                <div class="switch-route" aria-hidden="true">
+                  <span class="route-node">you</span>
+                  <span class="route-line"></span>
+                  <span class="route-node route-cloud">cloud</span>
+                  <span class="route-node route-device">this device</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="feature-card feature-fallback reveal" style="--delay: 140ms">
+              <span class="feature-index">03</span>
+              <h3>Smart Fallback</h3>
+              <p>
+                If the local engine is stopped or busy, Dodoi quietly retries through your last cloud
+                connection. You just see the translation.
+              </p>
+              <div class="fallback-visual" aria-hidden="true">
+                <span class="fallback-node fallback-local">local</span>
+                <span class="fallback-path"><span class="fallback-packet"></span></span>
+                <span class="fallback-node fallback-cloud">cloud</span>
+                <span class="fallback-status"><span class="status-dot"></span> seamless</span>
+              </div>
+            </article>
+
+            <article class="feature-card feature-paste reveal" style="--delay: 210ms">
+              <div class="feature-copy">
+                <span class="feature-index">04</span>
+                <h3>Paste-back, without the pause.</h3>
+                <p>
+                  The result is copied and inserted into the app you came from, cursor still where you
+                  left it. Your train of thought stays on the rails.
+                </p>
+              </div>
+              <div class="paste-visual" aria-hidden="true">
+                <div class="window-bar"><span></span><span></span><span></span></div>
+                <div class="window-line window-line-long"></div>
+                <div class="window-line"></div>
+                <div class="window-line window-line-short"></div>
+                <div class="paste-inline"><span class="paste-text">Bonjour, comment allez-vous&nbsp;?</span><span class="paste-cursor"></span></div>
+              </div>
+            </article>
+
+            <article class="feature-card feature-key reveal" style="--delay: 0ms">
+              <span class="feature-index">05</span>
+              <h3>Your key stays yours.</h3>
+              <p>API keys live in a local <code>.env</code> file, masked in the UI, and never enter the renderer.</p>
+              <div class="key-visual" aria-hidden="true">
+                <span class="key-prefix">DODOI_API_KEY</span>
+                <span class="key-value">••••••••••••••••</span>
+                <span class="key-lock">
+                  <svg viewBox="0 0 24 24"><path d="M7.5 10V7.8a4.5 4.5 0 0 1 9 0V10m-11 0h13v9.5h-13V10Z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </span>
+              </div>
+            </article>
+
+            <article class="feature-card feature-languages tilt reveal" style="--delay: 70ms">
+              <span class="feature-index">06</span>
+              <h3>33 languages, mapped.</h3>
+              <p>FLORES-200 codes and automatic source detection, from Japanese to Arabic.</p>
+              <div class="language-orbit" aria-hidden="true">
+                <span class="lang-node" style="--i: 0">日</span>
+                <span class="lang-node" style="--i: 1">ES</span>
+                <span class="lang-node" style="--i: 2">FR</span>
+                <span class="lang-node" style="--i: 3">ع</span>
+                <span class="lang-node" style="--i: 4">한</span>
+                <span class="lang-node" style="--i: 5">DE</span>
+                <span class="lang-core"><svg viewBox="0 0 32 32"><use href="#dodoi-mark"></use></svg></span>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section offline" id="offline" aria-labelledby="offline-title">
+        <div class="shell offline-grid">
+          <div class="offline-copy reveal">
+            <p class="eyebrow"><span class="eyebrow-dot"></span> Local engine</p>
+            <h2 id="offline-title">The cloud is<br /><span class="gradient-text">optional.</span></h2>
+            <p class="section-lead">
+              Dodoi ships with an on-demand NLLB-200 3.3B engine. Download it once, and translation keeps
+              working with no connection, no API key, and no text leaving your machine.
+            </p>
+            <ul class="check-list">
+              <li><span class="check-mark">✓</span> CTranslate2 INT8 · about 3.5 GB</li>
+              <li><span class="check-mark">✓</span> Isolated Python 3.10–3.13 runtime</li>
+              <li><span class="check-mark">✓</span> Real Stop control that releases RAM</li>
+            </ul>
+            <div class="offline-actions">
+              <button
+                class="button button-ghost"
+                type="button"
+                data-offline-toggle
+                aria-pressed="false"
+              >
+                <span class="button-led"></span>
+                <span data-offline-label>Simulate offline</span>
+              </button>
+              <span class="offline-footnote">No account. No API key. No requests.</span>
+            </div>
+          </div>
+
+          <div class="engine-card glass reveal" style="--delay: 120ms" data-engine-card>
+            <div class="engine-head">
+              <div>
+                <span class="engine-kicker">Local engine</span>
+                <h3>NLLB-200 <span>3.3B</span></h3>
+              </div>
+              <span class="engine-state" data-engine-state aria-live="polite"><span class="status-dot"></span> Online</span>
+            </div>
+
+            <div class="engine-orbit" aria-hidden="true">
+              <div class="engine-ring engine-ring-one"></div>
+              <div class="engine-ring engine-ring-two"></div>
+              <div class="engine-globe">
+                <span class="globe-grid"></span>
+                <span class="globe-glow"></span>
+              </div>
+              <span class="engine-node node-ja">日</span>
+              <span class="engine-node node-es">ES</span>
+              <span class="engine-node node-ar">ع</span>
+              <span class="engine-node node-fr">FR</span>
+              <span class="engine-node node-ko">한</span>
+              <span class="engine-badge"><span class="status-dot"></span> 127.0.0.1</span>
+            </div>
+
+            <div class="engine-stats">
+              <div class="engine-stat">
+                <span class="stat-label">Model</span>
+                <span class="stat-value">INT8 · CTranslate2</span>
+              </div>
+              <div class="engine-stat">
+                <span class="stat-label">Languages</span>
+                <span class="stat-value">33 targets</span>
+              </div>
+              <div class="engine-stat">
+                <span class="stat-label">Requests leaving</span>
+                <span class="stat-value stat-accent" data-egress>0</span>
+              </div>
+            </div>
+
+            <div class="engine-log" aria-hidden="true">
+              <span><i></i> Python runtime ready</span>
+              <span><i></i> Model loaded · 3.5 GB</span>
+              <span><i></i> Listening on localhost</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section product" id="product" aria-labelledby="product-title">
+        <div class="shell">
+          <div class="section-head section-head-row reveal">
+            <div>
+              <p class="eyebrow"><span class="eyebrow-dot"></span> A closer look</p>
+              <h2 id="product-title">Made to disappear<br /><span class="soft-text">into your flow.</span></h2>
+            </div>
+            <p class="section-lead section-lead-right">
+              A translator should feel like a reflex, not a destination. Dodoi opens over your work and
+              gets out of the way.
+            </p>
+          </div>
+
+          <div class="screenshot-shell reveal">
+            <div class="screenshot-toolbar">
+              <div class="tab-list" role="tablist" aria-label="Dodoi screenshots">
+                <button class="tab is-active" id="tab-overlay" role="tab" aria-selected="true" aria-controls="shot-panel" data-shot="overlay">Floating overlay</button>
+                <button class="tab" id="tab-settings" role="tab" aria-selected="false" aria-controls="shot-panel" tabindex="-1" data-shot="settings">Control room</button>
+              </div>
+              <span class="screenshot-note" id="shotNote">Summon · type · translate</span>
+            </div>
+            <div class="screenshot-frame" id="shot-panel" role="tabpanel" aria-labelledby="tab-overlay">
+              <div class="screenshot-bg" aria-hidden="true"></div>
+              <img
+                src="assets/shots/overlay.png"
+                alt="Dodoi floating translation overlay with a lime translate button"
+                id="shotImage"
+                width="760"
+                height="442"
+              />
+              <div class="shot-corner shot-corner-tl" aria-hidden="true"></div>
+              <div class="shot-corner shot-corner-br" aria-hidden="true"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section how" id="how" aria-labelledby="how-title">
+        <div class="shell">
+          <div class="section-head reveal">
+            <p class="eyebrow"><span class="eyebrow-dot"></span> Three moves</p>
+            <h2 id="how-title">In and out.<br /><span class="soft-text">Nothing in between.</span></h2>
+          </div>
+
+          <div class="steps">
+            <div class="steps-line" aria-hidden="true"><span></span></div>
+            <article class="step reveal" style="--delay: 0ms">
+              <span class="step-number">01</span>
+              <div class="step-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="3" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M7 10h3m-1.5 0v3m4-3h4m-4 2h4m-2 1.5v2" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+              </div>
+              <h3>Summon</h3>
+              <p>Press <kbd>Shift</kbd> + <kbd>~</kbd> anywhere. Dodoi appears on the display you're using.</p>
+            </article>
+            <article class="step reveal" style="--delay: 90ms">
+              <span class="step-number">02</span>
+              <div class="step-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 11h10M4 16h13" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="m17.5 15 .7 2.1 2.1.7-2.1.7-.7 2.1-.7-2.1-2.1-.7 2.1-.7.7-2.1Z" fill="currentColor"/></svg>
+              </div>
+              <h3>Say it</h3>
+              <p>Type or paste anything. Dodoi detects the source and keeps the tone, dialect, and formatting.</p>
+            </article>
+            <article class="step reveal" style="--delay: 180ms">
+              <span class="step-number">03</span>
+              <div class="step-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h14m0 0-4-4m4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 6v12" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" opacity=".45"/></svg>
+              </div>
+              <h3>Move on</h3>
+              <p>Hit <kbd>Ctrl</kbd> + <kbd>↵</kbd>. The translation is copied and pasted back where you were typing.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section download" id="download" aria-labelledby="download-title">
+        <div class="shell">
+          <div class="download-panel glass reveal">
+            <div class="download-glow" aria-hidden="true"></div>
+            <div class="download-head">
+              <p class="eyebrow"><span class="eyebrow-dot"></span> Get Dodoi</p>
+              <h2 id="download-title">Take it<br /><span class="gradient-text">everywhere.</span></h2>
+              <p class="section-lead">
+                Free and open source. Available for the three desktops you actually use.
+              </p>
+              <div class="download-actions">
+                <a class="button" href="https://github.com/azzamalessa188-star/dodoi/actions/workflows/build.yml" target="_blank" rel="noreferrer">
+                  View builds on GitHub
+                  <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9m0 0-3.4-3.4M12 8l-3.4 3.4" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </a>
+                <a class="button button-ghost" href="https://github.com/azzamalessa188-star/dodoi" target="_blank" rel="noreferrer">Browse the source</a>
+              </div>
+              <p class="download-note">
+                <span class="pulse-dot"></span>
+                v0.1.0 · CI artifacts · unsigned builds may ask for your OS approval
+              </p>
+            </div>
+
+            <div class="platform-list">
+              <a class="platform-card" href="https://github.com/azzamalessa188-star/dodoi/actions/workflows/build.yml" target="_blank" rel="noreferrer">
+                <span class="platform-icon">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M3 4.5h8.7v6.8H3V4.5Zm9.3 0H21v6.8h-8.7V4.5ZM3 12h8.7v7.5H3V12Zm9.3 0H21v7.5h-8.7V12Z" opacity=".85"/></svg>
+                </span>
+                <span class="platform-copy">
+                  <span class="platform-name">Windows</span>
+                  <span class="platform-meta">10/11 · x64 · NSIS</span>
+                </span>
+                <span class="platform-arrow">↗</span>
+              </a>
+              <a class="platform-card" href="https://github.com/azzamalessa188-star/dodoi/actions/workflows/build.yml" target="_blank" rel="noreferrer">
+                <span class="platform-icon">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M16.3 12.9c0-2 1.6-3 1.7-3.1-.9-1.3-2.3-1.5-2.8-1.5-1.2-.1-2.3.7-2.9.7-.6 0-1.5-.7-2.5-.7-1.3 0-2.5.8-3.2 2-1.3 2.2-.3 5.5 1 7.3.6.9 1.3 1.9 2.2 1.9.9 0 1.2-.6 2.3-.6s1.4.6 2.3.6c1 0 1.6-.9 2.2-1.8.7-1 1-2 1-2.1-.1 0-2.3-.9-2.3-2.7ZM14.4 7.2c.5-.6.8-1.4.7-2.2-.7 0-1.6.5-2.1 1.1-.5.5-.9 1.4-.8 2.2.8.1 1.6-.4 2.2-1.1Z"/></svg>
+                </span>
+                <span class="platform-copy">
+                  <span class="platform-name">macOS</span>
+                  <span class="platform-meta">12+ · x64 &amp; arm64 · DMG</span>
+                </span>
+                <span class="platform-arrow">↗</span>
+              </a>
+              <a class="platform-card" href="https://github.com/azzamalessa188-star/dodoi/actions/workflows/build.yml" target="_blank" rel="noreferrer">
+                <span class="platform-icon">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 3.2c2.3 0 4.2 1 5.2 1.8l1.2-1v3.4c-.2 0-.8-.2-1.4-.2-1.4 0-2.4.5-2.9.8v4h3.4c.2 0 .4.2.4.4l-.6 2.1c0 .2-.2.3-.4.3h-3v6.1c-.6.1-1.2.2-1.9.2s-1.3-.1-1.9-.2v-6.1h-3c-.2 0-.3-.1-.4-.3l-.6-2.1c0-.2.1-.4.4-.4h3.5v-4c-.5-.3-1.5-.8-2.9-.8-.6 0-1.2.2-1.4.2V4l1.2 1C7.8 4.2 9.7 3.2 12 3.2Z"/></svg>
+                </span>
+                <span class="platform-copy">
+                  <span class="platform-name">Linux</span>
+                  <span class="platform-meta">x64 · AppImage &amp; .deb</span>
+                </span>
+                <span class="platform-arrow">↗</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="closing" aria-labelledby="closing-title">
+        <div class="closing-glow" aria-hidden="true"></div>
+        <div class="shell closing-inner reveal">
+          <span class="closing-mark"><svg viewBox="0 0 32 32" aria-hidden="true"><use href="#dodoi-mark"></use></svg></span>
+          <p class="eyebrow"><span class="eyebrow-dot"></span> The right words, right where you are</p>
+          <h2 id="closing-title">Stay in your flow.</h2>
+          <p>The world can keep its languages. You keep your train of thought.</p>
+          <div class="closing-actions">
+            <a class="button" href="#download">Get Dodoi</a>
+            <button class="button button-ghost summon-trigger" type="button">
+              <span class="keycap-group"><kbd>Shift</kbd><kbd>~</kbd></span>
+              <span>Summon the preview</span>
+            </button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="shell footer-grid">
+        <div class="footer-brand">
+          <a class="brand" href="#top" aria-label="Dodoi home">
+            <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><use href="#dodoi-mark"></use></svg>
+            <span class="brand-copy">
+              <span class="brand-name">Dodoi</span>
+              <span class="brand-tagline">AI translator</span>
+            </span>
+          </a>
+          <p>The right words, right where you are.</p>
+        </div>
+        <div class="footer-links">
+          <a href="#features">Features</a>
+          <a href="#offline">Offline</a>
+          <a href="#product">A closer look</a>
+          <a href="#download">Download</a>
+          <a href="https://github.com/azzamalessa188-star/dodoi" target="_blank" rel="noreferrer">GitHub ↗</a>
+        </div>
+        <div class="footer-meta">
+          <span>MIT licensed</span>
+          <span>Built with Electron + NLLB-200</span>
+          <span>© 2026 Dodoi</span>
+        </div>
+      </div>
+    </footer>
+
+    <div class="summon-layer" id="summonLayer" hidden>
+      <div class="summon-backdrop" data-summon-close></div>
+      <div class="summon-dialog" role="dialog" aria-modal="true" aria-labelledby="summon-title" aria-describedby="summon-desc">
+        <div class="summon-topline">
+          <span class="summon-title" id="summon-title"><span class="status-dot"></span> Dodoi preview</span>
+          <button class="icon-button" type="button" data-summon-close aria-label="Close preview">
+            <svg viewBox="0 0 24 24"><path d="m7 7 10 10M17 7 7 17" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+          </button>
+        </div>
+        <p class="summon-desc" id="summon-desc">This is the web preview. In the app, Dodoi opens above whatever you're working in.</p>
+        <div class="summon-window glass">
+          <div class="summon-window-head">
+            <span class="panel-brand">
+              <svg class="panel-mark" viewBox="0 0 32 32" aria-hidden="true"><use href="#dodoi-mark"></use></svg>
+              <span class="panel-name">Dodoi</span>
+            </span>
+            <span class="panel-status"><span class="status-dot"></span> Ready</span>
+          </div>
+          <div class="summon-body">
+            <span class="field-hint">From any app · Auto-detect</span>
+            <p class="summon-source" id="summonSource">The right words, right where you are.</p>
+            <div class="translation-rule"><span class="rule-line"></span><span class="rule-label"><span class="live-dot"></span><span id="summonTarget">Japanese</span></span><span class="rule-line"></span></div>
+            <p class="summon-result" id="summonResult" lang="ja" dir="ltr" aria-live="polite">あなたのいる場所に、ふさわしい言葉を。</p>
+          </div>
+          <div class="summon-footer">
+            <span class="language-pulse"></span>
+            <span>Auto-detect</span>
+            <span class="summon-footer-arrow">→</span>
+            <span id="summonTargetFooter">Japanese</span>
+            <button class="translate-button" id="summonNext" type="button">Next phrase <span class="button-shortcut"><kbd>↵</kbd></span></button>
+          </div>
+        </div>
+        <div class="summon-hint"><kbd>Esc</kbd> to close · <kbd>Shift</kbd><kbd>~</kbd> to summon</div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -10,6 +10,8 @@ Built with Electron, vanilla JavaScript, HTML/CSS, and Tailwind CSS. Works with 
 
 <img src="docs/settings.png" alt="Dodoi settings window" width="900" />
 
+The standalone landing page lives in [`landing/`](landing/) — a self-contained static page that mirrors the app's dark, glassy visual language.
+
 ## Features
 
 - Frameless, transparent glassmorphism overlay that follows the cursor's display
