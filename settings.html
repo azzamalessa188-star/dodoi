@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self' ws://127.0.0.1:* http://127.0.0.1:*; object-src 'none'; base-uri 'none'; form-action 'none'"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dodoi Settings</title>
+  </head>
+  <body class="settings-body">
+    <div class="settings-root">
+      <div class="settings-shell is-loading">
+        <header class="settings-titlebar">
+          <div class="titlebar-brand">
+            <svg class="brand-mark brand-mark-small" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+              <defs>
+                <linearGradient id="settings-brand-gradient" x1="3" y1="3" x2="29" y2="29">
+                  <stop stop-color="#e2ff9b" />
+                  <stop offset="1" stop-color="#a8e857" />
+                </linearGradient>
+              </defs>
+              <rect x="1" y="1" width="30" height="30" rx="9" fill="url(#settings-brand-gradient)" />
+              <path
+                d="M7.8 12.4h15.1m0 0-3.4-3.4m3.4 3.4-3.4 3.4M24.2 19.6H9.1m0 0 3.4-3.4m-3.4 3.4 3.4 3.4"
+                stroke="#151a0f"
+                stroke-width="1.9"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+            <span class="titlebar-name">Dodoi</span>
+            <span class="titlebar-slash">/</span>
+            <span class="titlebar-section">Settings</span>
+          </div>
+
+          <div class="window-controls">
+            <button class="window-control" id="minimizeButton" type="button" aria-label="Minimize">
+              <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M4 8h8" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" />
+              </svg>
+            </button>
+            <button class="window-control" id="maximizeButton" type="button" aria-label="Maximize">
+              <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <rect x="4.25" y="4.25" width="7.5" height="7.5" rx="1.1" stroke="currentColor" stroke-width="1.15" />
+              </svg>
+            </button>
+            <button class="window-control window-control-close" id="closeButton" type="button" aria-label="Close">
+              <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="m4.75 4.75 6.5 6.5m0-6.5-6.5 6.5" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" />
+              </svg>
+            </button>
+          </div>
+        </header>
+
+        <div class="settings-content" id="settingsContent">
+          <div class="ambient-halo" aria-hidden="true"></div>
+
+          <section class="settings-hero">
+            <div>
+              <p class="eyebrow"><span></span> Control room</p>
+              <h1>Make Dodoi yours.</h1>
+              <p class="settings-lead">
+                Connect your AI provider, choose where words land, and set the shortcut that brings
+                Dodoi to you from anywhere.
+              </p>
+            </div>
+            <div class="hero-state">
+              <span class="status-dot"></span>
+              <span id="overallState">Loading…</span>
+            </div>
+          </section>
+
+          <section class="settings-card" aria-labelledby="connectionTitle">
+            <div class="card-heading">
+              <span class="card-icon">
+                <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                  <path
+                    d="M6.8 12.8 3.9 10a3.8 3.8 0 0 1 5.4-5.4l2.2 2.2M13.2 7.2l2.9 2.8a3.8 3.8 0 0 1-5.4 5.4l-2.2-2.2"
+                    stroke="currentColor"
+                    stroke-width="1.4"
+                    stroke-linecap="round"
+                  />
+                  <path d="m8.2 11.8 3.6-3.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+                </svg>
+              </span>
+              <div class="card-title-wrap">
+                <h2 id="connectionTitle">AI connection</h2>
+                <p id="connectionDescription">Works with any OpenAI-compatible chat completions API.</p>
+              </div>
+              <span class="mini-status" id="connectionState">Not tested</span>
+            </div>
+
+            <div class="form-grid">
+              <div class="field">
+                <label for="provider">Provider</label>
+                <div class="select-wrap">
+                  <select id="provider">
+                    <option value="openai">OpenAI</option>
+                    <option value="openrouter">OpenRouter</option>
+                    <option value="groq">Groq</option>
+                    <option value="local-nllb">Local · NLLB-200 (offline)</option>
+                    <option value="custom">Custom / compatible API</option>
+                  </select>
+                  <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                    <path d="m4 6 4 4 4-4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </div>
+              </div>
+
+              <div class="field" data-cloud-only>
+                <label for="model">Model</label>
+                <input id="model" class="text-input" type="text" autocomplete="off" spellcheck="false" placeholder="gpt-4o-mini" />
+              </div>
+
+              <div class="field field-wide free-model-panel" id="freeModelPanel" hidden>
+                <div class="label-row">
+                  <label for="freeModelSelect">OpenRouter free models</label>
+                  <button class="free-model-refresh" id="refreshFreeModelsButton" type="button">
+                    <svg viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                      <path d="M11.3 5.4A4.6 4.6 0 1 0 11.8 8" stroke="currentColor" stroke-width="1.15" stroke-linecap="round" />
+                      <path d="M11.6 2.7v3H8.6" stroke="currentColor" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                    <span id="refreshFreeModelsLabel">Refresh</span>
+                  </button>
+                </div>
+                <div class="free-model-control">
+                  <div class="select-wrap">
+                    <select id="freeModelSelect" aria-label="OpenRouter free model">
+                      <option value="openrouter/free">Auto-route · openrouter/free (recommended)</option>
+                    </select>
+                    <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                      <path d="m4 6 4 4 4-4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                  </div>
+                  <span class="free-model-badge" id="freeModelBadge">Auto</span>
+                </div>
+                <div class="free-model-status" id="freeModelStatus" role="status" aria-live="polite">
+                  <span class="status-dot"></span>
+                  <span id="freeModelStatusText">Free models load automatically for OpenRouter.</span>
+                </div>
+              </div>
+
+              <div class="field field-wide" data-cloud-only>
+                <div class="label-row">
+                  <label for="apiUrl">Endpoint URL</label>
+                  <span class="field-note">Base URL, ending at /v1</span>
+                </div>
+                <input
+                  id="apiUrl"
+                  class="text-input code-input"
+                  type="url"
+                  autocomplete="off"
+                  spellcheck="false"
+                  placeholder="https://api.openai.com/v1"
+                />
+              </div>
+
+              <div class="field field-wide" id="apiKeyField" data-cloud-only>
+                <div class="label-row">
+                  <label for="apiKey" id="apiKeyLabel">API key</label>
+                  <span class="field-note" id="apiKeyConfiguredLabel"></span>
+                </div>
+                <div class="input-with-action">
+                  <input
+                    id="apiKey"
+                    class="text-input code-input"
+                    type="password"
+                    autocomplete="new-password"
+                    spellcheck="false"
+                    placeholder="Paste a new key to replace the saved one"
+                  />
+                  <button class="input-action" id="revealKeyButton" type="button" aria-label="Show API key" title="Show API key">
+                    <svg class="eye-open" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                      <path
+                        d="M2.2 9s2.4-4.1 6.8-4.1S15.8 9 15.8 9s-2.4 4.1-6.8 4.1S2.2 9 2.2 9Z"
+                        stroke="currentColor"
+                        stroke-width="1.3"
+                      />
+                      <circle cx="9" cy="9" r="1.9" stroke="currentColor" stroke-width="1.3" />
+                    </svg>
+                    <svg class="eye-closed" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                      <path d="m3 3 12 12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" />
+                      <path
+                        d="M7.1 5.1A7.7 7.7 0 0 1 9 4.9c4.4 0 6.8 4.1 6.8 4.1a12 12 0 0 1-2.1 2.5M11.2 13c-.7.2-1.4.3-2.2.3-4.4 0-6.8-4.1-6.8-4.1a12 12 0 0 1 2.2-2.6"
+                        stroke="currentColor"
+                        stroke-width="1.3"
+                        stroke-linecap="round"
+                      />
+                    </svg>
+                  </button>
+                </div>
+                <div class="field-meta">
+                  <span id="apiKeyHint">Your key stays in the local .env file and never reaches the UI layer.</span>
+                  <button class="text-action" id="clearKeyButton" type="button" hidden>Remove saved key</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="local-panel" id="localPanel" hidden>
+              <div class="local-panel-head">
+                <div class="local-engine-identity">
+                  <span class="local-engine-pulse" id="localEnginePulse" aria-hidden="true"></span>
+                  <div>
+                    <div class="local-engine-title">
+                      <h3>NLLB-200 · 3.3B</h3>
+                      <span class="local-badge" id="localBadge">Not installed</span>
+                    </div>
+                    <p class="local-engine-sub" id="localStatusText">Checking the local runtime…</p>
+                  </div>
+                </div>
+                <span class="local-engine-size" id="localSize">INT8 · ~3.5 GB</span>
+              </div>
+
+              <div class="local-progress" id="localProgress" hidden>
+                <div class="local-progress-labels">
+                  <span id="localProgressText">Preparing…</span>
+                  <span id="localProgressPercent">0%</span>
+                </div>
+                <div class="local-progress-track">
+                  <span id="localProgressBar"></span>
+                </div>
+                <span class="local-progress-detail" id="localProgressDetail"></span>
+              </div>
+
+              <div class="local-action-row">
+                <button class="button button-primary" id="localPrepareButton" type="button">
+                  <span class="button-spinner" id="localPrepareSpinner" aria-hidden="true" hidden></span>
+                  <span id="localPrepareLabel">Download &amp; Convert</span>
+                </button>
+                <button class="button button-secondary" id="localStartButton" type="button" hidden>
+                  <span class="button-spinner" id="localStartSpinner" aria-hidden="true" hidden></span>
+                  <span id="localStartLabel">Start engine</span>
+                </button>
+                <button class="button button-secondary" id="localStopButton" type="button" hidden>Stop engine</button>
+                <button class="button button-ghost" id="localCancelButton" type="button" hidden>Cancel</button>
+                <button class="text-action local-log-button" id="localTestButton" type="button" hidden>Test engine</button>
+                <button class="text-action local-log-button" id="localLogButton" type="button">Open log</button>
+              </div>
+
+              <div class="local-status-grid">
+                <div class="local-status-item">
+                  <span>Runtime</span>
+                  <strong id="localPython">Checking…</strong>
+                </div>
+                <div class="local-status-item">
+                  <span>Model</span>
+                  <strong id="localModelSize">Not downloaded</strong>
+                </div>
+                <div class="local-status-item">
+                  <span>Memory</span>
+                  <strong id="localMemory">Checking…</strong>
+                </div>
+              </div>
+
+              <div class="local-alert" id="localDiskWarning" hidden></div>
+              <div class="local-alert" id="localMemoryWarning" hidden></div>
+              <div class="local-alert is-error" id="localError" hidden></div>
+
+              <div class="local-fallback">
+                <label class="fallback-toggle" for="smartFallback">
+                  <span class="fallback-copy">
+                    <strong>Smart Fallback</strong>
+                    <small>If the engine is stopped or fails, translate with your last cloud connection.</small>
+                  </span>
+                  <span class="switch">
+                    <input id="smartFallback" type="checkbox" />
+                    <span class="switch-track" aria-hidden="true">
+                      <span class="switch-thumb"></span>
+                    </span>
+                  </span>
+                </label>
+                <div class="fallback-summary" id="fallbackSummary">Checking the saved cloud connection…</div>
+                <button class="text-action fallback-key-action" id="fallbackKeyButton" type="button" hidden>
+                  Add fallback key
+                </button>
+              </div>
+            </div>
+
+            <div class="test-row" data-cloud-only>
+              <button class="button button-secondary" id="testButton" type="button">
+                <span class="button-spinner" id="testSpinner" aria-hidden="true" hidden></span>
+                <svg class="button-icon" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                  <path
+                    d="M9 2.5v3M9 12.5v3M2.5 9h3M12.5 9h3M4.4 4.4l2.1 2.1M11.5 11.5l2.1 2.1M13.6 4.4l-2.1 2.1M6.5 11.5l-2.1 2.1"
+                    stroke="currentColor"
+                    stroke-width="1.3"
+                    stroke-linecap="round"
+                  />
+                </svg>
+                <span id="testLabel">Test connection</span>
+              </button>
+              <div class="test-result" id="testResult" role="status" aria-live="polite" hidden>
+                <span class="test-result-dot"></span>
+                <span id="testResultText"></span>
+              </div>
+              <span class="test-note">No messages are sent to the model.</span>
+            </div>
+          </section>
+
+          <div class="settings-duo">
+            <section class="settings-card" aria-labelledby="languageTitle">
+              <div class="card-heading">
+                <span class="card-icon">
+                  <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                    <circle cx="10" cy="10" r="7.2" stroke="currentColor" stroke-width="1.35" />
+                    <path d="M2.8 10h14.4M10 2.8c1.9 2 3 4.5 3 7.2s-1.1 5.2-3 7.2c-1.9-2-3-4.5-3-7.2s1.1-5.2 3-7.2Z" stroke="currentColor" stroke-width="1.35" />
+                  </svg>
+                </span>
+                <div class="card-title-wrap">
+                  <h2 id="languageTitle">Target language</h2>
+                  <p>The language every translation lands in.</p>
+                </div>
+              </div>
+
+              <div class="field">
+                <label for="targetLanguage">Translate into</label>
+                <input
+                  id="targetLanguage"
+                  class="text-input"
+                  type="text"
+                  list="languageSuggestions"
+                  autocomplete="off"
+                  placeholder="English"
+                />
+                <datalist id="languageSuggestions"></datalist>
+              </div>
+
+              <div class="language-chips" id="languageChips" aria-label="Common target languages"></div>
+              <p class="card-footnote">Works with regional dialects and informal writing too.</p>
+            </section>
+
+            <section class="settings-card" aria-labelledby="shortcutTitle">
+              <div class="card-heading">
+                <span class="card-icon">
+                  <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                    <rect x="2.6" y="5" width="14.8" height="10" rx="2.4" stroke="currentColor" stroke-width="1.35" />
+                    <path d="M5.5 8h.01M8.1 8h.01M10.7 8h.01M13.3 8h.01M5.5 10.6h.01M8.1 10.6h.01M10.7 10.6h.01M13.3 10.6h.01M6.4 13.1h7.2" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" />
+                  </svg>
+                </span>
+                <div class="card-title-wrap">
+                  <h2 id="shortcutTitle">Global shortcut</h2>
+                  <p>Summon Dodoi from any app.</p>
+                </div>
+              </div>
+
+              <button class="shortcut-recorder" id="shortcutRecorder" type="button">
+                <span class="shortcut-keys" id="shortcutKeys">Shift + ~</span>
+                <span class="shortcut-capture-hint" id="shortcutHint">Click to record a new shortcut</span>
+              </button>
+              <div class="shortcut-feedback" id="shortcutFeedback" role="status" aria-live="polite">
+                <span class="status-dot"></span>
+                <span id="shortcutStatusText">Ready</span>
+              </div>
+              <div class="startup-option">
+                <label class="fallback-toggle" for="launchAtStartup">
+                  <span class="fallback-copy">
+                    <strong>Launch on startup</strong>
+                    <small>Start Dodoi in the system tray when you sign in, with your shortcut ready everywhere.</small>
+                  </span>
+                  <span class="switch">
+                    <input id="launchAtStartup" type="checkbox" />
+                    <span class="switch-track" aria-hidden="true">
+                      <span class="switch-thumb"></span>
+                    </span>
+                  </span>
+                </label>
+                <p class="startup-note" id="startupNote">
+                  Dodoi opens hidden. Local translation warms up automatically when that provider is selected.
+                </p>
+              </div>
+              <p class="card-footnote">Use at least one modifier. Ctrl + Enter is reserved for translating.</p>
+            </section>
+          </div>
+
+          <div class="privacy-note">
+            <svg viewBox="0 0 18 18" fill="none" aria-hidden="true">
+              <path d="M9 2.2 14.2 4v4.5c0 3.3-2.2 6.2-5.2 7.3-3-1.1-5.2-4-5.2-7.3V4L9 2.2Z" stroke="currentColor" stroke-width="1.25" />
+              <path d="m6.8 8.9 1.4 1.4 2.9-3" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            <span>Your API key is stored only in the local <code>.env</code> file. Text is sent directly to your chosen provider.</span>
+          </div>
+        </div>
+
+        <footer class="settings-footer">
+          <div class="env-location">
+            <span class="env-label">Local config</span>
+            <button class="env-path-button" id="openEnvButton" type="button" title="Open .env">
+              <span class="env-path" id="envPath">Loading…</span>
+              <svg viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                <path d="M5.3 3.4H3.1v7.5h7.5V8.7M8.1 2.3h3.6v3.6M11.2 2.8 6.4 7.6" stroke="currentColor" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </button>
+          </div>
+
+          <div class="footer-actions">
+            <span class="dirty-state" id="dirtyState">
+              <span class="status-dot"></span>
+              <span id="dirtyText">All changes saved</span>
+            </span>
+            <button class="button button-ghost" id="discardButton" type="button" disabled>Discard</button>
+            <button class="button button-primary" id="saveButton" type="button">
+              <span class="button-spinner" id="saveSpinner" aria-hidden="true" hidden></span>
+              <span id="saveLabel">Save changes</span>
+              <kbd id="saveShortcutHint">Ctrl S</kbd>
+            </button>
+          </div>
+        </footer>
+
+        <div class="toast" id="toast" role="status" aria-live="polite" hidden>
+          <span class="toast-icon"></span>
+          <span class="toast-message" id="toastMessage"></span>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="/src/renderer/settings.js"></script>
+  </body>
+</html>

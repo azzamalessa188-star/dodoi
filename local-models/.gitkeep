@@ -1,0 +1,2 @@
+# Keep this directory in the repository so electron-builder can copy from it
+# even when no local model has been staged for a build.

@@ -1,0 +1,10 @@
+node_modules/
+dist/
+release/
+.env
+*.log
+.DS_Store
+.vite/
+local-models/*
+!local-models/.gitkeep
+!local-models/README.md

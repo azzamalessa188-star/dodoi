@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self' ws://127.0.0.1:* http://127.0.0.1:*; object-src 'none'; base-uri 'none'; form-action 'none'"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dodoi</title>
+  </head>
+  <body class="overlay-body is-hidden">
+    <main class="overlay-stage" id="stage">
+      <div class="overlay-glow overlay-glow-lime" aria-hidden="true"></div>
+      <div class="overlay-glow overlay-glow-amber" aria-hidden="true"></div>
+
+      <section class="glass-panel" id="panel" aria-label="Dodoi translator">
+        <div class="top-progress" aria-hidden="true"><span></span></div>
+
+        <header class="overlay-header">
+          <div class="brand-lockup">
+            <svg class="brand-mark" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+              <defs>
+                <linearGradient id="overlay-brand-gradient" x1="3" y1="3" x2="29" y2="29">
+                  <stop stop-color="#e2ff9b" />
+                  <stop offset="1" stop-color="#a8e857" />
+                </linearGradient>
+              </defs>
+              <rect x="1" y="1" width="30" height="30" rx="9" fill="url(#overlay-brand-gradient)" />
+              <path
+                d="M7.8 12.4h15.1m0 0-3.4-3.4m3.4 3.4-3.4 3.4M24.2 19.6H9.1m0 0 3.4-3.4m-3.4 3.4 3.4 3.4"
+                stroke="#151a0f"
+                stroke-width="1.9"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+            <div class="brand-copy">
+              <span class="brand-name">Dodoi</span>
+              <span class="brand-tagline">AI translator</span>
+            </div>
+          </div>
+
+          <div class="overlay-header-actions">
+            <div class="app-status" id="appStatus">
+              <span class="status-dot"></span>
+              <span id="appStatusText">Ready</span>
+            </div>
+            <button
+              class="icon-button"
+              id="settingsButton"
+              type="button"
+              aria-label="Open settings"
+              title="Settings"
+            >
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path
+                  d="M12 15.2a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4Z"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                />
+                <path
+                  d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2.83 2.83-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1.03 1.56V21h-4v-.08A1.7 1.7 0 0 0 8.96 19.4a1.7 1.7 0 0 0-1.88.34l-.06.06-2.83-2.83.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-1.56-1.03H3v-4h.08A1.7 1.7 0 0 0 4.6 8.96a1.7 1.7 0 0 0-.34-1.88l-.06-.06 2.83-2.83.06.06A1.7 1.7 0 0 0 8.96 4.6 1.7 1.7 0 0 0 10 3.04V3h4v.08a1.7 1.7 0 0 0 1.03 1.56 1.7 1.7 0 0 0 1.88-.34l.06-.06 2.83 2.83-.06.06a1.7 1.7 0 0 0-.34 1.88A1.7 1.7 0 0 0 20.96 10H21v4h-.08A1.7 1.7 0 0 0 19.4 15Z"
+                  stroke="currentColor"
+                  stroke-width="1.35"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </button>
+          </div>
+        </header>
+
+        <div class="composer">
+          <textarea
+            id="sourceText"
+            class="source-input"
+            rows="2"
+            maxlength="12000"
+            placeholder="Type anything, in any language…"
+            autocomplete="off"
+            autocorrect="off"
+            autocapitalize="sentences"
+            spellcheck="false"
+            aria-label="Text to translate"
+          ></textarea>
+        </div>
+
+        <div class="status-bar" id="statusBar" role="status" aria-live="polite" hidden>
+          <span class="status-icon" id="statusIcon" aria-hidden="true"></span>
+          <span class="status-message" id="statusMessage"></span>
+          <button class="status-action" id="statusAction" type="button" hidden>Open Settings</button>
+        </div>
+
+        <footer class="overlay-footer">
+          <div class="language-flow">
+            <span class="language-pulse" aria-hidden="true"></span>
+            <span class="language-source">Auto-detect</span>
+            <svg class="flow-arrow" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+              <path
+                d="M3.5 9h10.2m0 0-3.3-3.3M13.7 9l-3.3 3.3"
+                stroke="currentColor"
+                stroke-width="1.4"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+            <button class="target-language" id="targetChip" type="button" title="Change target language">
+              <span id="targetLanguage">English</span>
+              <svg viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                <path d="m3 4.5 3 3 3-3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" />
+              </svg>
+            </button>
+          </div>
+
+          <div class="overlay-actions">
+            <span class="hide-hint"><kbd>Esc</kbd></span>
+            <button class="translate-button" id="translateButton" type="button">
+              <span class="button-spinner" id="translateSpinner" aria-hidden="true" hidden></span>
+              <span id="translateLabel">Translate</span>
+              <kbd>Ctrl ↵</kbd>
+            </button>
+          </div>
+        </footer>
+      </section>
+    </main>
+
+    <script type="module" src="/src/renderer/overlay.js"></script>
+  </body>
+</html>
