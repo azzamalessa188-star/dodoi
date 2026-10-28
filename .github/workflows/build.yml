@@ -14,6 +14,11 @@ jobs:
     name: ${{ matrix.name }}
     runs-on: ${{ matrix.os }}
     timeout-minutes: 60
+    # The secrets context is not available in step-level if expressions, so
+    # expose only whether each platform certificate exists.
+    env:
+      HAS_WINDOWS_CERT: ${{ secrets.WINDOWS_CSC_LINK != '' }}
+      HAS_MACOS_CERT: ${{ secrets.MACOS_CSC_LINK != '' }}
     strategy:
       fail-fast: false
       matrix:
@@ -72,20 +77,29 @@ jobs:
       # Optional: stage local-models/nllb-200-3.3B-int8 before this step to
       # produce installers with the offline model embedded. See
       # local-models/README.md. Without it, Dodoi downloads the model on first use.
-      - name: Build ${{ matrix.name }}
+      # Separate secrets per platform: a Windows PFX and a macOS P12 cannot
+      # share one CSC_LINK value. The signed and unsigned builds are split so
+      # that an absent certificate leaves CSC_LINK undefined; electron-builder
+      # treats an empty CSC_LINK as a file path on macOS and fails.
+      - name: Build signed ${{ matrix.name }}
+        if: (runner.os == 'Windows' && env.HAS_WINDOWS_CERT == 'true') || (runner.os == 'macOS' && env.HAS_MACOS_CERT == 'true')
         run: npm run ${{ matrix.script }}
         env:
-          # Separate secrets per platform: a Windows PFX and a macOS P12 cannot
-          # share one CSC_LINK value.
-          CSC_LINK: ${{ runner.os == 'Windows' && secrets.WINDOWS_CSC_LINK || runner.os == 'macOS' && secrets.MACOS_CSC_LINK || '' }}
-          CSC_KEY_PASSWORD: ${{ runner.os == 'Windows' && secrets.WINDOWS_CSC_KEY_PASSWORD || runner.os == 'macOS' && secrets.MACOS_CSC_KEY_PASSWORD || '' }}
-          CSC_IDENTITY_AUTO_DISCOVERY: ${{ (runner.os == 'Windows' && secrets.WINDOWS_CSC_LINK != '') || (runner.os == 'macOS' && secrets.MACOS_CSC_LINK != '') }}
+          CSC_LINK: ${{ runner.os == 'Windows' && secrets.WINDOWS_CSC_LINK || secrets.MACOS_CSC_LINK }}
+          CSC_KEY_PASSWORD: ${{ runner.os == 'Windows' && secrets.WINDOWS_CSC_KEY_PASSWORD || secrets.MACOS_CSC_KEY_PASSWORD }}
+          CSC_IDENTITY_AUTO_DISCOVERY: 'true'
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
-          APPLE_API_KEY: ${{ runner.os == 'macOS' && secrets.APPLE_API_KEY != '' && format('{0}/AuthKey.p8', runner.temp) || '' }}
+          APPLE_API_KEY: ${{ secrets.APPLE_API_KEY != '' && format('{0}/AuthKey.p8', runner.temp) || '' }}
           APPLE_API_KEY_ID: ${{ secrets.APPLE_API_KEY != '' && secrets.APPLE_API_KEY_ID || '' }}
           APPLE_API_ISSUER: ${{ secrets.APPLE_API_KEY != '' && secrets.APPLE_API_ISSUER || '' }}
+
+      - name: Build unsigned ${{ matrix.name }}
+        if: runner.os == 'Linux' || (runner.os == 'Windows' && env.HAS_WINDOWS_CERT != 'true') || (runner.os == 'macOS' && env.HAS_MACOS_CERT != 'true')
+        run: npm run ${{ matrix.script }}
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
 
       - name: Upload installers
         uses: actions/upload-artifact@v4
