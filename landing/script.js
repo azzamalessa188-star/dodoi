@@ -173,12 +173,12 @@ $$('#siteNav a[href^="#"]').forEach((link) => {
 
 /* ── Download CTA ───────────────────────────────────────────────────── */
 
-const RELEASE_BASE = 'https://github.com/azzamalessa188-star/dodoi/releases/download/v0.1.0'
+const RELEASE_BASE = 'https://github.com/azzamalessa188-star/dodoi/releases/download/v0.2.0'
 
 const DOWNLOADS = {
-  windows: { file: 'Dodoi-Setup-0.1.0-x64.exe', label: 'Download for Windows' },
-  mac: { file: 'Dodoi-0.1.0-arm64.zip', label: 'Download for macOS' },
-  linux: { file: 'Dodoi-0.1.0-x86_64.AppImage', label: 'Download for Linux' },
+  windows: { file: 'Dodoi-Setup-0.2.0-x64.zip', label: 'Download for Windows' },
+  mac: { file: 'Dodoi-0.2.0-arm64.zip', label: 'Download for macOS' },
+  linux: { file: 'Dodoi-0.2.0-x86_64.AppImage', label: 'Download for Linux' },
   mobile: { href: '#platformList', label: 'Choose your desktop' },
 }
 
@@ -207,6 +207,26 @@ if (downloadPrimary) {
 
   if (downloadLabel) downloadLabel.textContent = target.label
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Enable clicking the entire platform card to open the first download link
+  const platformCards = document.querySelectorAll('.platform-card');
+
+  platformCards.forEach(card => {
+    card.addEventListener('click', (e) => {
+      // If the user clicks directly on a link/button inside the card, let it function as intended
+      if (e.target.tagName === 'A' || e.target.closest('a')) {
+        return;
+      }
+
+      // Find the first download link within the card and open it in a new tab
+      const firstLink = card.querySelector('.version-link, a');
+      if (firstLink && firstLink.href) {
+        window.open(firstLink.href, '_blank');
+      }
+    });
+  });
+});
 
 /* ── Scroll spy ─────────────────────────────────────────────────────── */
 
