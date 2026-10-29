@@ -149,27 +149,21 @@
             </div>
             <div class="hero-meta reveal" style="--delay: 240ms">
               <span class="meta-item">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path fill="currentColor" d="M3 4.5h8.7v6.8H3V4.5Zm9.3 0H21v6.8h-8.7V4.5ZM3 12h8.7v7.5H3V12Zm9.3 0H21v7.5h-8.7V12Z" opacity=".8" />
-                </svg>
+                <img src="assets/windows-logo.png" alt="Windows" class="meta-logo" />
                 Windows
               </span>
               <span class="meta-item">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path fill="currentColor" d="M16.3 12.9c0-2 1.6-3 1.7-3.1-.9-1.3-2.3-1.5-2.8-1.5-1.2-.1-2.3.7-2.9.7-.6 0-1.5-.7-2.5-.7-1.3 0-2.5.8-3.2 2-1.3 2.2-.3 5.5 1 7.3.6.9 1.3 1.9 2.2 1.9.9 0 1.2-.6 2.3-.6s1.4.6 2.3.6c1 0 1.6-.9 2.2-1.8.7-1 1-2 1-2.1-.1 0-2.3-.9-2.3-2.7ZM14.4 7.2c.5-.6.8-1.4.7-2.2-.7 0-1.6.5-2.1 1.1-.5.5-.9 1.4-.8 2.2.8.1 1.6-.4 2.2-1.1Z" />
-                </svg>
+                <img src="assets/macos-logo.png" alt="macOS" class="meta-logo" />
                 macOS
               </span>
               <span class="meta-item">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path fill="currentColor" d="M12 3.2c2.3 0 4.2 1 5.2 1.8l1.2-1v3.4c-.2 0-.8-.2-1.4-.2-1.4 0-2.4.5-2.9.8v4h3.4c.2 0 .4.2.4.4l-.6 2.1c0 .2-.2.3-.4.3h-3v6.1c-.6.1-1.2.2-1.9.2s-1.3-.1-1.9-.2v-6.1h-3c-.2 0-.3-.1-.4-.3l-.6-2.1c0-.2.1-.4.4-.4h3.5v-4c-.5-.3-1.5-.8-2.9-.8-.6 0-1.2.2-1.4.2V4l1.2 1C7.8 4.2 9.7 3.2 12 3.2Z" />
-                </svg>
+                <img src="assets/linux-logo.png" alt="Linux" class="meta-logo" />
                 Linux
               </span>
               <span class="meta-separator"></span>
               <span class="meta-note">
                 <span class="pulse-dot"></span>
-                Open source · v0.1.0
+                Open source · v0.2.0
               </span>
             </div>
           </div>
@@ -425,7 +419,7 @@
             </p>
             <ul class="check-list">
               <li><span class="check-mark">✓</span> CTranslate2 INT8 · about 3.5 GB</li>
-              <li><span class="check-mark">✓</span> Isolated Python 3.10–3.13 runtime</li>
+              <li><span class="check-mark">✓</span> Bundled Python 3.12 runtime</li>
               <li><span class="check-mark">✓</span> Real Stop control that releases RAM</li>
             </ul>
             <div class="offline-actions">
@@ -482,7 +476,7 @@
             </div>
 
             <div class="engine-log" aria-hidden="true">
-              <span><i></i> Python runtime ready</span>
+              <span><i></i> Embedded Python runtime ready</span>
               <span><i></i> Model loaded · 3.5 GB</span>
               <span><i></i> Listening on localhost</span>
             </div>
@@ -578,8 +572,9 @@
                 <a
                   class="button download-primary"
                   id="downloadPrimary"
-                  href="https://github.com/azzamalessa188-star/dodoi/releases/download/v0.1.0/Dodoi-Setup-0.1.0-x64.exe"
-                  download
+                  href="https://github.com/azzamalessa188-star/dodoi/releases/download/v0.2.0/Dodoi-Setup-0.2.0-x64.zip"
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
                   <svg class="button-download-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2.6v7.1m0 0 2.7-2.7M8 9.7 5.3 7M3 12.2v1.2h10v-1.2" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/></svg>
                   <span data-download-label>Download for Windows</span>
@@ -588,59 +583,64 @@
               </div>
               <p class="download-note">
                 <span class="pulse-dot"></span>
-                v0.1.0 · Direct downloads · unsigned builds may ask for your OS approval
+                v0.2.0 · Direct downloads · unsigned builds may ask for your OS approval
               </p>
             </div>
 
             <div class="platform-list" id="platformList">
-              <a
-                class="platform-card"
-                href="https://github.com/azzamalessa188-star/dodoi/releases/download/v0.1.0/Dodoi-Setup-0.1.0-x64.exe"
-                download
-              >
-                <span class="platform-icon">
-                  <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M3 4.5h8.7v6.8H3V4.5Zm9.3 0H21v6.8h-8.7V4.5ZM3 12h8.7v7.5H3V12Zm9.3 0H21v7.5h-8.7V12Z" opacity=".85"/></svg>
+              <div class="platform-card platform-group">
+                <span class="platform-icon platform-icon--img">
+                  <img src="assets/windows-logo.png" alt="Windows logo" />
                 </span>
                 <span class="platform-copy">
                   <span class="platform-name">Windows</span>
-                  <span class="platform-meta">10/11 · x64 · .exe installer</span>
+                  <span class="platform-meta">10 / 11 · x64</span>
+                  <span class="platform-versions">
+                    <a class="version-link" target="_blank" rel="noopener noreferrer" href="https://github.com/azzamalessa188-star/dodoi/releases/download/v0.2.0/Dodoi-Setup-0.2.0-x64.zip">
+                      <span class="version-label">Portable</span>
+                      <span class="version-ext">.zip</span>
+                    </a>
+                  </span>
                 </span>
-                <span class="platform-arrow" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M8 2.6v7.1m0 0 2.7-2.7M8 9.7 5.3 7M3 12.2v1.2h10v-1.2" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-              </a>
-              <a
-                class="platform-card"
-                href="https://github.com/azzamalessa188-star/dodoi/releases/download/v0.1.0/Dodoi-0.1.0-arm64.zip"
-                download
-              >
-                <span class="platform-icon">
-                  <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M16.3 12.9c0-2 1.6-3 1.7-3.1-.9-1.3-2.3-1.5-2.8-1.5-1.2-.1-2.3.7-2.9.7-.6 0-1.5-.7-2.5-.7-1.3 0-2.5.8-3.2 2-1.3 2.2-.3 5.5 1 7.3.6.9 1.3 1.9 2.2 1.9.9 0 1.2-.6 2.3-.6s1.4.6 2.3.6c1 0 1.6-.9 2.2-1.8.7-1 1-2 1-2.1-.1 0-2.3-.9-2.3-2.7ZM14.4 7.2c.5-.6.8-1.4.7-2.2-.7 0-1.6.5-2.1 1.1-.5.5-.9 1.4-.8 2.2.8.1 1.6-.4 2.2-1.1Z"/></svg>
+              </div>
+              <div class="platform-card platform-group">
+                <span class="platform-icon platform-icon--img">
+                  <img src="assets/macos-logo.png" alt="macOS logo" />
                 </span>
                 <span class="platform-copy">
                   <span class="platform-name">macOS</span>
-                  <span class="platform-meta">12+ · Apple Silicon · .zip</span>
+                  <span class="platform-meta">12+ · Intel &amp; Apple Silicon</span>
+                  <span class="platform-versions">
+                    <a class="version-link" target="_blank" rel="noopener noreferrer" href="https://github.com/azzamalessa188-star/dodoi/releases/download/v0.2.0/Dodoi-0.2.0-x64.zip">
+                      <span class="version-label">Intel</span>
+                      <span class="version-ext">.zip</span>
+                    </a>
+                    <a class="version-link" target="_blank" rel="noopener noreferrer" href="https://github.com/azzamalessa188-star/dodoi/releases/download/v0.2.0/Dodoi-0.2.0-arm64.zip">
+                      <span class="version-label">Apple Silicon</span>
+                      <span class="version-ext">.zip</span>
+                    </a>
+                  </span>
                 </span>
-                <span class="platform-arrow" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M8 2.6v7.1m0 0 2.7-2.7M8 9.7 5.3 7M3 12.2v1.2h10v-1.2" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-              </a>
-              <a
-                class="platform-card"
-                href="https://github.com/azzamalessa188-star/dodoi/releases/download/v0.1.0/Dodoi-0.1.0-x86_64.AppImage"
-                download
-              >
-                <span class="platform-icon">
-                  <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 3.2c2.3 0 4.2 1 5.2 1.8l1.2-1v3.4c-.2 0-.8-.2-1.4-.2-1.4 0-2.4.5-2.9.8v4h3.4c.2 0 .4.2.4.4l-.6 2.1c0 .2-.2.3-.4.3h-3v6.1c-.6.1-1.2.2-1.9.2s-1.3-.1-1.9-.2v-6.1h-3c-.2 0-.3-.1-.4-.3l-.6-2.1c0-.2.1-.4.4-.4h3.5v-4c-.5-.3-1.5-.8-2.9-.8-.6 0-1.2.2-1.4.2V4l1.2 1C7.8 4.2 9.7 3.2 12 3.2Z"/></svg>
+              </div>
+              <div class="platform-card platform-group">
+                <span class="platform-icon platform-icon--img">
+                  <img src="assets/linux-logo.png" alt="Linux logo" />
                 </span>
                 <span class="platform-copy">
                   <span class="platform-name">Linux</span>
-                  <span class="platform-meta">x64 · .AppImage</span>
+                  <span class="platform-meta">x64</span>
+                  <span class="platform-versions">
+                    <a class="version-link" target="_blank" rel="noopener noreferrer" href="https://github.com/azzamalessa188-star/dodoi/releases/download/v0.2.0/Dodoi-0.2.0-x86_64.AppImage">
+                      <span class="version-label">AppImage</span>
+                      <span class="version-ext">.AppImage</span>
+                    </a>
+                    <a class="version-link" target="_blank" rel="noopener noreferrer" href="https://github.com/azzamalessa188-star/dodoi/releases/download/v0.2.0/Dodoi-0.2.0-amd64.deb">
+                      <span class="version-label">Debian / Ubuntu</span>
+                      <span class="version-ext">.deb</span>
+                    </a>
+                  </span>
                 </span>
-                <span class="platform-arrow" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M8 2.6v7.1m0 0 2.7-2.7M8 9.7 5.3 7M3 12.2v1.2h10v-1.2" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-              </a>
-              <p class="download-alt">
-                <span class="download-alt-label">Also available</span>
-                <a href="https://github.com/azzamalessa188-star/dodoi/releases/download/v0.1.0/Dodoi-0.1.0-x64.zip" download>Intel Mac (.zip)</a>
-                <span class="download-alt-sep" aria-hidden="true">/</span>
-                <a href="https://github.com/azzamalessa188-star/dodoi/releases/download/v0.1.0/Dodoi-0.1.0-amd64.deb" download>Debian / Ubuntu (.deb)</a>
-              </p>
+              </div>
             </div>
           </div>
         </div>
