@@ -38,4 +38,4 @@ Deploy the contents of this directory as the site root. For GitHub Pages, point 
 - All animation respects `prefers-reduced-motion`.
 - The page is intentionally self-contained and makes no third-party requests for its own assets.
 - The language preview uses a small set of representative languages from the 33 supported by the app.
-- Download buttons link directly to the assets on the [`v0.1.0` GitHub Release](https://github.com/azzamalessa188-star/dodoi/releases/tag/v0.1.0). GitHub serves them as attachments, so the browser downloads the file without navigating away from the page. Builds are unsigned; the page notes that the OS may ask for approval.
+- Download buttons link directly to the assets on the [`v0.2.0` GitHub Release](https://github.com/azzamalessa188-star/dodoi/releases/tag/v0.2.0). GitHub serves them as attachments, so the browser downloads the file without navigating away from the page. Builds are unsigned; the page notes that the OS may ask for approval.
