@@ -24,6 +24,7 @@ Opening `landing/index.html` directly in a browser also works, because every ass
   - `Shift` + `~` summon preview with focus trapping and `Esc` to close
   - cloud/local switch preview and offline “airplane mode” engine state
   - screenshot tabs with keyboard navigation
+  - OS-aware direct download button (Windows, macOS, or Linux)
   - pointer-aware card lighting, tilt, scroll reveals, and scroll spy
 - `assets/` — self-hosted fonts, app icon, and product screenshots
 - `assets/fonts/OFL.txt` — licensing for the bundled font families
@@ -35,6 +36,6 @@ Deploy the contents of this directory as the site root. For GitHub Pages, point 
 ## Notes
 
 - All animation respects `prefers-reduced-motion`.
-- The page is intentionally self-contained and makes no third-party requests.
+- The page is intentionally self-contained and makes no third-party requests for its own assets.
 - The language preview uses a small set of representative languages from the 33 supported by the app.
-- The download buttons link to the public GitHub Actions workflow; the repository does not host a GitHub Release.
+- Download buttons link directly to the assets on the [`v0.1.0` GitHub Release](https://github.com/azzamalessa188-star/dodoi/releases/tag/v0.1.0). GitHub serves them as attachments, so the browser downloads the file without navigating away from the page. Builds are unsigned; the page notes that the OS may ask for approval.

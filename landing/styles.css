@@ -457,6 +457,10 @@ kbd {
   transform: translateX(2px);
 }
 
+.download-primary:hover .button-download-icon {
+  transform: translateY(2px);
+}
+
 .button:active {
   transform: translateY(0) scale(0.985);
 }
@@ -2986,15 +2990,54 @@ kbd {
 }
 
 .platform-arrow {
+  display: flex;
   margin-left: auto;
+  align-items: center;
+  justify-content: center;
   color: var(--faint);
-  font-size: 0.9rem;
   transition: color 200ms ease, transform 200ms var(--ease-out);
+}
+
+.platform-arrow svg {
+  width: 15px;
+  height: 15px;
 }
 
 .platform-card:hover .platform-arrow {
   color: var(--accent);
-  transform: translate(2px, -2px);
+  transform: translateY(2px);
+}
+
+.download-alt {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px 9px;
+  margin: 2px 5px 0;
+  color: var(--faint);
+  font-size: 0.6rem;
+  letter-spacing: 0.01em;
+}
+
+.download-alt-label {
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.download-alt a {
+  color: var(--muted);
+  text-decoration: underline;
+  text-decoration-color: rgba(201, 247, 111, 0.3);
+  text-underline-offset: 3px;
+  transition: color 180ms ease;
+}
+
+.download-alt a:hover {
+  color: var(--accent);
+}
+
+.download-alt-sep {
+  color: rgba(255, 255, 255, 0.18);
 }
 
 /* ── Closing & footer ───────────────────────────────────────────────── */

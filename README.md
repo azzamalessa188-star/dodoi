@@ -42,12 +42,13 @@ The standalone landing page lives in [`landing/`](landing/) — a self-contained
 
 ## Install
 
-Download the latest installer for your platform from your release channel. The CI workflow in `.github/workflows/build.yml` produces these artifacts:
+Download from the [v0.1.0 GitHub Release](https://github.com/azzamalessa188-star/dodoi/releases/tag/v0.1.0), use the direct download buttons on the [landing page](landing/), or build from source. The CI workflow in `.github/workflows/build.yml` produces these artifacts:
 
 | Platform | Artifact | Installation |
 | --- | --- | --- |
 | Windows 10/11 x64 | `Dodoi-Setup-0.1.0-x64.exe` | Run the NSIS wizard, choose an install directory, and select the desktop and Start Menu shortcuts you want. |
-| macOS 12+ | `Dodoi-0.1.0-x64.dmg` or `Dodoi-0.1.0-arm64.dmg` | Open the DMG, drag **Dodoi** to **Applications**, then launch it. You can move the app to another folder afterwards. |
+| macOS 12+ Apple Silicon | `Dodoi-0.1.0-arm64.zip` (CI also produces a `.dmg`) | Extract the zip, drag **Dodoi** to **Applications**, then launch it. You can move the app to another folder afterwards. |
+| macOS 12+ Intel | `Dodoi-0.1.0-x64.zip` (CI also produces a `.dmg`) | Extract the zip, drag **Dodoi** to **Applications**, then launch it. You can move the app to another folder afterwards. |
 | Linux x64 | `Dodoi-0.1.0-x86_64.AppImage` | `chmod +x Dodoi-0.1.0-x86_64.AppImage`, then run it. No installation is required. |
 | Ubuntu/Debian x64 | `Dodoi-0.1.0-amd64.deb` | `sudo apt install ./Dodoi-0.1.0-amd64.deb` |
 

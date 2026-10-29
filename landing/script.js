@@ -19,6 +19,8 @@ const summonTarget = $('#summonTarget')
 const summonTargetFooter = $('#summonTargetFooter')
 const summonResult = $('#summonResult')
 const summonNext = $('#summonNext')
+const downloadPrimary = $('#downloadPrimary')
+const downloadLabel = downloadPrimary?.querySelector('[data-download-label]')
 
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
 const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)')
@@ -168,6 +170,43 @@ window.addEventListener('resize', () => {
 $$('#siteNav a[href^="#"]').forEach((link) => {
   link.addEventListener('click', () => setNavOpen(false))
 })
+
+/* ── Download CTA ───────────────────────────────────────────────────── */
+
+const RELEASE_BASE = 'https://github.com/azzamalessa188-star/dodoi/releases/download/v0.1.0'
+
+const DOWNLOADS = {
+  windows: { file: 'Dodoi-Setup-0.1.0-x64.exe', label: 'Download for Windows' },
+  mac: { file: 'Dodoi-0.1.0-arm64.zip', label: 'Download for macOS' },
+  linux: { file: 'Dodoi-0.1.0-x86_64.AppImage', label: 'Download for Linux' },
+  mobile: { href: '#platformList', label: 'Choose your desktop' },
+}
+
+const detectDownload = () => {
+  const source = `${navigator.userAgentData?.platform || ''} ${navigator.platform || ''} ${
+    navigator.userAgent || ''
+  }`.toLowerCase()
+  const touchMac = /mac/.test(source) && navigator.maxTouchPoints > 1
+
+  if (/android|iphone|ipad|ipod/.test(source) || touchMac) return DOWNLOADS.mobile
+  if (/win/.test(source)) return DOWNLOADS.windows
+  if (/mac|darwin/.test(source)) return DOWNLOADS.mac
+  if (/linux|x11/.test(source)) return DOWNLOADS.linux
+  return DOWNLOADS.windows
+}
+
+if (downloadPrimary) {
+  const target = detectDownload()
+
+  if (target.file) {
+    downloadPrimary.href = `${RELEASE_BASE}/${target.file}`
+  } else {
+    downloadPrimary.href = target.href
+    downloadPrimary.removeAttribute('download')
+  }
+
+  if (downloadLabel) downloadLabel.textContent = target.label
+}
 
 /* ── Scroll spy ─────────────────────────────────────────────────────── */
 
