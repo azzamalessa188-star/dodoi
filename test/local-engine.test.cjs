@@ -123,6 +123,8 @@ test('prefers a provisioned bundled Python runtime', async () => {
   const calls = []
   const { engine } = makeEngine({
     appPath: appDirectory,
+    platform: 'linux',
+    arch: 'x64',
     spawnSyncImpl: (command, args) => {
       calls.push({ command, args })
       return { stdout: 'Python 3.12.16\n', stderr: '' }
