@@ -1,6 +1,6 @@
 # Dodoi landing page
 
-A static, dependency-free landing page for Dodoi **v0.2.0**. It shares the app's visual language: a near-black canvas, lime accent, glass panels, Space Grotesk display type, Inter body type, and the floating translator overlay as the hero.
+A static, dependency-free landing page for Dodoi **v0.2.1**. It shares the app's visual language: a near-black canvas, lime accent, glass panels, Space Grotesk display type, Inter body type, and the floating translator overlay as the hero.
 
 ## Preview locally
 
@@ -36,13 +36,13 @@ Opening `landing/index.html` directly in a browser also works, because every ass
 
 ## Download cards
 
-Every v0.2.0 variant is listed on its platform card with an OS logo and a direct release link:
+Every v0.2.1 variant is listed on its platform card with an OS logo and a direct release link:
 
 | Platform | Variants |
 | --- | --- |
-| Windows | `Dodoi-Setup-0.2.0-x64.zip` (portable) |
-| macOS | `Dodoi-0.2.0-arm64.zip` (Apple Silicon) and `Dodoi-0.2.0-x64.zip` (Intel) |
-| Linux | `Dodoi-0.2.0-x86_64.AppImage` and `Dodoi-0.2.0-amd64.deb` |
+| Windows | `Dodoi-Setup-0.2.1-x64.exe` (installer) |
+| macOS | `Dodoi-0.2.1-arm64.zip` (Apple Silicon) and `Dodoi-0.2.1-x64.zip` (Intel) |
+| Linux | `Dodoi-0.2.1-x86_64.AppImage` and `Dodoi-0.2.1-amd64.deb` |
 
 The primary button detects the visitor's OS and points at the best default; the version links always expose every asset.
 
@@ -56,5 +56,5 @@ Deploy the contents of this directory as the site root. For GitHub Pages, point 
 - Language and theme choices persist in `localStorage` (`dodoi-lang`, `dodoi-theme`); shareable overrides use `?lang=en|ar` and `?theme=light|dark`.
 - The page is intentionally self-contained and makes no third-party requests for its own assets.
 - The language preview uses a small set of representative languages from the 33 supported by the app.
-- Download buttons link directly to the assets on the [`v0.2.0` GitHub Release](https://github.com/azzamalessa188-star/dodoi/releases/tag/v0.2.0). GitHub serves them as attachments, so the browser downloads the file without navigating away from the page. Builds are unsigned; the page notes that the OS may ask for approval.
-- **Auto-update is not enabled for v0.2.0.** The release publishes installers only, with no `latest*.yml` manifests, so upgrading is a manual download-and-replace step.
+- Download buttons link directly to the assets on the [`v0.2.1` GitHub Release](https://github.com/azzamalessa188-star/dodoi/releases/tag/v0.2.1). GitHub serves them as attachments, so the browser downloads the file without navigating away from the page. Builds are unsigned; the page notes that the OS may ask for approval.
+- **Auto-update is enabled for v0.2.1.** The release publishes installer builds with `latest*.yml` manifests, so installed copies can update automatically.

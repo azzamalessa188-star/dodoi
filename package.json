@@ -1,7 +1,7 @@
 {
   "name": "dodoi",
   "productName": "Dodoi",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "A floating AI translator for every app.",
   "homepage": "https://github.com/azzamalessa188-star/dodoi",
   "main": "electron/main.cjs",

@@ -74,7 +74,7 @@ const I18N = {
       'Dodoi floats above your work. One shortcut, any language, and the right words are back in the app you were using — before the thought escapes.',
     'hero.get': 'Get Dodoi',
     'hero.try': 'Try the shortcut',
-    'hero.openSource': 'Open source · v0.2.0',
+    'hero.openSource': 'Open source · v0.2.1',
     'hero.chipLanguages': '33 languages',
     'hero.chipLocal': 'Local model ready',
     'hero.chipSummon': 'to summon',
@@ -187,8 +187,8 @@ const I18N = {
     'download.title2': 'everywhere.',
     'download.lead': 'Free and open source. Available for the three desktops you actually use.',
     'download.browse': 'Browse the source',
-    'download.note': 'v0.2.0 · Direct downloads · unsigned builds may ask for your OS approval',
-    'download.portable': 'Portable',
+    'download.note': 'v0.2.1 · Direct downloads · unsigned builds may ask for your OS approval',
+    'download.installer': 'Installer',
     'download.debian': 'Debian / Ubuntu',
     'download.altWindows': 'Windows logo',
     'download.altMac': 'macOS logo',
@@ -268,7 +268,7 @@ const I18N = {
       'يطفو Dodoi فوق عملك. اختصار واحد، وأي لغة، لتعود الكلمات الصحيحة إلى التطبيق الذي تستخدمه — قبل أن تفلت الفكرة.',
     'hero.get': 'احصل على Dodoi',
     'hero.try': 'جرّب الاختصار',
-    'hero.openSource': 'مفتوح المصدر · v0.2.0',
+    'hero.openSource': 'مفتوح المصدر · v0.2.1',
     'hero.chipLanguages': '33 لغة',
     'hero.chipLocal': 'النموذج المحلي جاهز',
     'hero.chipSummon': 'للاستدعاء',
@@ -380,8 +380,8 @@ const I18N = {
     'download.lead': 'مجاني ومفتوح المصدر. متاح لأنظمة سطح المكتب الثلاثة التي تستخدمها فعلًا.',
     'download.browse': 'تصفّح الكود المصدري',
     'download.note':
-      'v0.2.0 · تنزيلات مباشرة · قد تطلب النسخ غير الموقّعة موافقة نظام التشغيل',
-    'download.portable': 'محمول',
+      'v0.2.1 · تنزيلات مباشرة · قد تطلب النسخ غير الموقّعة موافقة نظام التشغيل',
+    'download.installer': 'المثبّت',
     'download.debian': 'Debian / Ubuntu',
     'download.altWindows': 'شعار Windows',
     'download.altMac': 'شعار macOS',
@@ -706,12 +706,12 @@ $$('#siteNav a[href^="#"]').forEach((link) => {
 
 /* ── Download CTA ───────────────────────────────────────────────────── */
 
-const RELEASE_BASE = 'https://github.com/azzamalessa188-star/dodoi/releases/download/v0.2.0'
+const RELEASE_BASE = 'https://github.com/azzamalessa188-star/dodoi/releases/download/v0.2.1'
 
 const DOWNLOADS = {
-  windows: { file: 'Dodoi-Setup-0.2.0-x64.zip', key: 'windows' },
-  mac: { file: 'Dodoi-0.2.0-arm64.zip', key: 'mac' },
-  linux: { file: 'Dodoi-0.2.0-x86_64.AppImage', key: 'linux' },
+  windows: { file: 'Dodoi-Setup-0.2.1-x64.exe', key: 'windows' },
+  mac: { file: 'Dodoi-0.2.1-arm64.zip', key: 'mac' },
+  linux: { file: 'Dodoi-0.2.1-x86_64.AppImage', key: 'linux' },
   mobile: { href: '#platformList', key: 'mobile' },
 }
 
