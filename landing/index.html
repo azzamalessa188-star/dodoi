@@ -1,16 +1,19 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" dir="ltr" data-theme="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#080a06" />
+    <meta name="color-scheme" content="dark light" />
+    <meta name="theme-color" id="metaThemeColor" content="#080a06" />
     <meta
       name="description"
+      id="metaDescription"
       content="Dodoi is a floating AI translator for every app. Summon it with a shortcut, translate with the cloud or fully offline, and paste the result back without losing your place."
     />
-    <meta property="og:title" content="Dodoi — Speak freely. Everywhere." />
+    <meta property="og:title" id="ogTitle" content="Dodoi — Speak freely. Everywhere." />
     <meta
       property="og:description"
+      id="ogDescription"
       content="A floating AI translator that lives above every app. One shortcut, any language, back to what you were doing."
     />
     <meta property="og:type" content="website" />
@@ -28,12 +31,29 @@
     <link rel="preload" href="assets/fonts/NotoSansJP-1.woff2" as="font" type="font/woff2" crossorigin />
     <script>
       document.documentElement.classList.add('js')
+      ;(function () {
+        var root = document.documentElement
+        var theme = 'dark'
+        var lang = 'en'
+        try {
+          var params = new URLSearchParams(window.location.search)
+          theme = params.get('theme') || localStorage.getItem('dodoi-theme') || 'dark'
+          lang = params.get('lang') || localStorage.getItem('dodoi-lang') || 'en'
+        } catch (error) {
+          /* Storage can be unavailable on file:// or in private mode. */
+        }
+        if (theme !== 'light' && theme !== 'dark') theme = 'dark'
+        if (lang !== 'ar' && lang !== 'en') lang = 'en'
+        root.setAttribute('data-theme', theme)
+        root.lang = lang
+        root.dir = lang === 'ar' ? 'rtl' : 'ltr'
+      })()
     </script>
     <link rel="stylesheet" href="styles.css" />
     <script src="script.js" defer></script>
   </head>
   <body>
-    <a class="skip-link" href="#main">Skip to content</a>
+    <a class="skip-link" href="#main" data-i18n="a11y.skip">Skip to content</a>
 
     <svg class="svg-defs" aria-hidden="true">
       <defs>
@@ -68,13 +88,15 @@
       <div class="pointer-glow" id="pointerGlow"></div>
     </div>
 
+    <div class="scroll-progress" id="scrollProgress" aria-hidden="true"><span></span></div>
+
     <header class="site-header" id="siteHeader">
       <div class="shell header-inner">
-        <a class="brand" href="#top" aria-label="Dodoi home">
+        <a class="brand" href="#top" aria-label="Dodoi home" data-i18n-aria="brand.home">
           <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><use href="#dodoi-mark"></use></svg>
           <span class="brand-copy">
             <span class="brand-name">Dodoi</span>
-            <span class="brand-tagline">AI translator</span>
+            <span class="brand-tagline" data-i18n="brand.tagline">AI translator</span>
           </span>
         </a>
 
@@ -85,16 +107,17 @@
           aria-expanded="false"
           aria-controls="siteNav"
           aria-label="Open navigation"
+          data-i18n-aria="nav.open"
         >
           <span></span>
           <span></span>
         </button>
 
-        <nav class="site-nav" id="siteNav" aria-label="Primary navigation">
-          <a href="#features">Features</a>
-          <a href="#offline">Offline</a>
-          <a href="#product">A closer look</a>
-          <a href="#how">How it works</a>
+        <nav class="site-nav" id="siteNav" aria-label="Primary navigation" data-i18n-aria="nav.label">
+          <a href="#features" data-i18n="nav.features">Features</a>
+          <a href="#offline" data-i18n="nav.offline">Offline</a>
+          <a href="#product" data-i18n="nav.product">A closer look</a>
+          <a href="#how" data-i18n="nav.how">How it works</a>
         </nav>
 
         <div class="header-actions">
@@ -107,7 +130,51 @@
             </svg>
             <span>GitHub</span>
           </a>
-          <a class="button button-small" href="#download">
+
+          <div class="header-controls">
+            <div class="lang-switch" role="group" aria-label="Language" data-i18n-aria="controls.language">
+              <button
+                class="lang-switch-button is-active"
+                type="button"
+                data-set-lang="en"
+                aria-pressed="true"
+                aria-label="English"
+                data-i18n-aria="controls.langEn"
+              >
+                EN
+              </button>
+              <button
+                class="lang-switch-button"
+                type="button"
+                data-set-lang="ar"
+                aria-pressed="false"
+                aria-label="Arabic"
+                data-i18n-aria="controls.langAr"
+                lang="ar"
+              >
+                ع
+              </button>
+            </div>
+
+            <button
+              class="theme-toggle"
+              id="themeToggle"
+              type="button"
+              aria-pressed="false"
+              aria-label="Switch to light mode"
+              data-i18n-aria="controls.themeLight"
+            >
+              <svg class="theme-icon theme-icon-sun" viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.5" />
+                <path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M18.7 5.3l-1.6 1.6M6.9 17.1l-1.6 1.6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+              </svg>
+              <svg class="theme-icon theme-icon-moon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M20 14.2A8.4 8.4 0 0 1 9.8 4a8.4 8.4 0 1 0 10.2 10.2Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
+              </svg>
+            </button>
+          </div>
+
+          <a class="button button-small" href="#download" data-i18n="hero.get">
             Get Dodoi
             <svg viewBox="0 0 16 16" aria-hidden="true">
               <path d="M3 8h9m0 0-3.4-3.4M12 8l-3.4 3.4" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" />
@@ -123,19 +190,19 @@
           <div class="hero-copy">
             <p class="eyebrow reveal">
               <span class="eyebrow-dot"></span>
-              A floating AI translator for every app
+              <span data-i18n="hero.eyebrow">A floating AI translator for every app</span>
             </p>
             <h1 class="reveal" id="hero-title" style="--delay: 60ms">
-              Speak freely.
-              <span class="gradient-text">Everywhere.</span>
+              <span data-i18n="hero.title1">Speak freely.</span>
+              <span class="gradient-text" data-i18n="hero.title2">Everywhere.</span>
             </h1>
-            <p class="hero-lead reveal" style="--delay: 120ms">
+            <p class="hero-lead reveal" style="--delay: 120ms" data-i18n="hero.lead">
               Dodoi floats above your work. One shortcut, any language, and the right words are back in the
               app you were using — before the thought escapes.
             </p>
             <div class="hero-actions reveal" style="--delay: 180ms">
               <a class="button" href="#download">
-                Get Dodoi
+                <span data-i18n="hero.get">Get Dodoi</span>
                 <svg viewBox="0 0 16 16" aria-hidden="true">
                   <path d="M3 8h9m0 0-3.4-3.4M12 8l-3.4 3.4" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" />
                 </svg>
@@ -144,7 +211,7 @@
                 <span class="keycap-group" aria-hidden="true">
                   <kbd>Shift</kbd><kbd>~</kbd>
                 </span>
-                <span>Try the shortcut</span>
+                <span data-i18n="hero.try">Try the shortcut</span>
               </button>
             </div>
             <div class="hero-meta reveal" style="--delay: 240ms">
@@ -163,7 +230,7 @@
               <span class="meta-separator"></span>
               <span class="meta-note">
                 <span class="pulse-dot"></span>
-                Open source · v0.2.0
+                <span data-i18n="hero.openSource">Open source · v0.2.0</span>
               </span>
             </div>
           </div>
@@ -181,42 +248,42 @@
               <span class="chip-icon chip-icon-lime">
                 <svg viewBox="0 0 20 20"><path d="M10 3.2a6.8 6.8 0 1 0 0 13.6 6.8 6.8 0 0 0 0-13.6Zm0 1.4c1 1.2 1.7 2.8 2 4.4H8c.3-1.6 1-3.2 2-4.4Zm-3.4 5.8h6.8c-.2 1.5-.7 2.8-1.3 3.8H7.9c-.6-1-1.1-2.3-1.3-3.8Zm-1.4 0H4.1c.3-1.5 1.1-2.8 2.3-3.7-.4.8-.7 1.9-.9 3.1l-.3.6Zm0 1.4.2.6c.2 1.2.5 2.2.9 3.1a5.4 5.4 0 0 1-3.2-3.7h2.1Zm9.1-1.4c-.2-1.2-.5-2.3-.9-3.1a5.5 5.5 0 0 1 2.3 3.7h-2.1l.7-.6Zm0 1.4h2.1a5.4 5.4 0 0 1-3.2 3.7c.4-.9.7-1.9.9-3.1l.2-.6Z" fill="currentColor"/></svg>
               </span>
-              <span>33 languages</span>
+              <span data-i18n="hero.chipLanguages">33 languages</span>
             </div>
 
             <div class="floating-chip chip-model" aria-hidden="true">
               <span class="status-dot"></span>
-              <span>Local model ready</span>
+              <span data-i18n="hero.chipLocal">Local model ready</span>
             </div>
 
             <div class="floating-chip chip-shortcut" aria-hidden="true">
               <span class="keycap-group"><kbd>Shift</kbd><kbd>~</kbd></span>
-              <span>to summon</span>
+              <span data-i18n="hero.chipSummon">to summon</span>
             </div>
 
-            <article class="translator-panel glass tilt" id="heroDemo" aria-label="Interactive Dodoi preview">
+            <article class="translator-panel glass tilt" id="heroDemo" aria-label="Interactive Dodoi preview" data-i18n-aria="hero.previewAria">
               <div class="panel-sheen" aria-hidden="true"></div>
               <header class="panel-header">
                 <div class="panel-brand">
                   <svg class="panel-mark" viewBox="0 0 32 32" aria-hidden="true"><use href="#dodoi-mark"></use></svg>
                   <div>
                     <span class="panel-name">Dodoi</span>
-                    <span class="panel-tagline">AI translator</span>
+                    <span class="panel-tagline" data-i18n="brand.tagline">AI translator</span>
                   </div>
                 </div>
                 <div class="panel-status">
                   <span class="status-dot"></span>
-                  <span id="heroStatus">Ready</span>
+                  <span id="heroStatus" data-i18n="hero.ready">Ready</span>
                 </div>
               </header>
 
               <div class="panel-body">
                 <div class="field-label">
-                  <span>From any app</span>
-                  <span class="field-hint">Auto-detect</span>
+                  <span data-i18n="hero.fromApp">From any app</span>
+                  <span class="field-hint" data-i18n="hero.autoDetect">Auto-detect</span>
                 </div>
                 <div class="hero-source">
-                  <span class="typed-text" id="heroSource">The right words, right where you are.</span>
+                  <span class="typed-text" id="heroSource" lang="en" dir="ltr">The right words, right where you are.</span>
                   <span class="text-caret" aria-hidden="true"></span>
                 </div>
 
@@ -230,7 +297,7 @@
                 </div>
 
                 <div class="hero-result-wrap">
-                  <span class="result-kicker">Translation</span>
+                  <span class="result-kicker" data-i18n="hero.translation">Translation</span>
                   <p class="hero-result" id="heroResult" lang="ja" dir="ltr" aria-live="polite">あなたのいる場所に、ふさわしい言葉を。</p>
                 </div>
               </div>
@@ -238,17 +305,17 @@
               <footer class="panel-footer">
                 <div class="language-flow">
                   <span class="language-pulse"></span>
-                  <span>Auto-detect</span>
+                  <span data-i18n="hero.autoDetect">Auto-detect</span>
                   <svg class="flow-arrow" viewBox="0 0 18 18" aria-hidden="true">
                     <path d="M3.5 9h10.2m0 0-3.3-3.3M13.7 9l-3.3 3.3" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
                   </svg>
-                  <button class="target-chip" id="heroLanguage" type="button" aria-label="Change preview language">
+                  <button class="target-chip" id="heroLanguage" type="button" aria-label="Change preview language" data-i18n-aria="hero.changeLanguage">
                     <span id="heroTarget">Japanese</span>
                     <svg viewBox="0 0 12 12" aria-hidden="true"><path d="m3 4.5 3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" /></svg>
                   </button>
                 </div>
                 <button class="translate-button" id="heroTranslate" type="button">
-                  <span id="heroTranslateLabel">Translate</span>
+                  <span id="heroTranslateLabel" data-i18n="hero.translate">Translate</span>
                   <span class="button-shortcut"><kbd>Ctrl</kbd><kbd>↵</kbd></span>
                 </button>
               </footer>
@@ -256,20 +323,20 @@
 
             <div class="hero-caption" aria-hidden="true">
               <span class="caption-line"></span>
-              <span>Live preview</span>
+              <span data-i18n="hero.livePreview">Live preview</span>
             </div>
           </div>
         </div>
 
-        <a class="scroll-cue" href="#features" aria-label="Scroll to features">
-          <span>See what's inside</span>
+        <a class="scroll-cue" href="#features" aria-label="Scroll to features" data-i18n-aria="hero.scrollLabel">
+          <span data-i18n="hero.scroll">See what's inside</span>
           <span class="scroll-cue-track"><span></span></span>
         </a>
       </section>
 
-      <section class="marquee-section" aria-label="Dodoi in many languages">
+      <section class="marquee-section" aria-label="Dodoi in many languages" data-i18n-aria="marquee.aria">
         <div class="marquee-fade" aria-hidden="true"></div>
-        <p class="marquee-label"><span class="pulse-dot"></span> One shortcut · thirty-three languages</p>
+        <p class="marquee-label"><span class="pulse-dot"></span> <span data-i18n="marquee.label">One shortcut · thirty-three languages</span></p>
         <div class="marquee">
           <div class="marquee-track">
             <span>Hello</span><i></i><span>こんにちは</span><i></i><span>Hola</span><i></i><span>Bonjour</span><i></i><span>مرحبا</span><i></i><span>안녕하세요</span><i></i><span>Ciao</span><i></i><span>Hallo</span><i></i><span>Olá</span><i></i><span>Привет</span><i></i><span>你好</span><i></i><span>Merhaba</span><i></i>
@@ -281,9 +348,9 @@
       <section class="section features" id="features" aria-labelledby="features-title">
         <div class="shell">
           <div class="section-head reveal">
-            <p class="eyebrow"><span class="eyebrow-dot"></span> Why Dodoi</p>
-            <h2 id="features-title">Small window.<br /><span class="soft-text">Serious range.</span></h2>
-            <p class="section-lead">
+            <p class="eyebrow"><span class="eyebrow-dot"></span> <span data-i18n="features.eyebrow">Why Dodoi</span></p>
+            <h2 id="features-title"><span data-i18n="features.title1">Small window.</span><br /><span class="soft-text" data-i18n="features.title2">Serious range.</span></h2>
+            <p class="section-lead" data-i18n="features.lead">
               Everything you need to translate in flow, and nothing that pulls you out of it.
             </p>
           </div>
@@ -292,13 +359,13 @@
             <article class="feature-card feature-shortcut tilt reveal" style="--delay: 0ms">
               <div class="feature-copy">
                 <span class="feature-index">01</span>
-                <h3>Summon it. Anywhere.</h3>
-                <p>
+                <h3 data-i18n="features.summonTitle">Summon it. Anywhere.</h3>
+                <p data-i18n="features.summonBody">
                   A global shortcut opens Dodoi above the app you're already in. No alt-tabbing, no tabs,
                   no lost place.
                 </p>
                 <button class="text-button summon-trigger" type="button">
-                  Try it now
+                  <span data-i18n="features.tryNow">Try it now</span>
                   <span class="keycap-group"><kbd>Shift</kbd><kbd>~</kbd></span>
                 </button>
               </div>
@@ -321,49 +388,49 @@
 
             <article class="feature-card feature-switch reveal" style="--delay: 70ms">
               <span class="feature-index">02</span>
-              <h3>Cloud. Local. Your call.</h3>
-              <p>
+              <h3 data-i18n="features.cloudTitle">Cloud. Local. Your call.</h3>
+              <p data-i18n="features.cloudBody">
                 Use any OpenAI-compatible provider, or switch to the built-in NLLB-200 engine and keep every
                 word on your machine.
               </p>
               <div class="switch-demo" data-switch-demo>
                 <div class="switch-labels">
-                  <span class="is-active" data-mode-label="cloud">Cloud</span>
-                  <span data-mode-label="local">Local</span>
+                  <span class="is-active" data-mode-label="cloud" data-i18n="features.cloud">Cloud</span>
+                  <span data-mode-label="local" data-i18n="features.local">Local</span>
                 </div>
-                <button class="switch" type="button" role="switch" aria-checked="false" aria-label="Toggle local engine preview">
+                <button class="switch" type="button" role="switch" aria-checked="false" aria-label="Toggle local engine preview" data-i18n-aria="features.switchAria">
                   <span class="switch-knob"></span>
                 </button>
                 <p class="switch-caption" data-switch-caption>OpenRouter · auto-routed</p>
                 <div class="switch-route" aria-hidden="true">
-                  <span class="route-node">you</span>
+                  <span class="route-node" data-i18n="features.you">you</span>
                   <span class="route-line"></span>
-                  <span class="route-node route-cloud">cloud</span>
-                  <span class="route-node route-device">this device</span>
+                  <span class="route-node route-cloud" data-i18n="features.cloudNode">cloud</span>
+                  <span class="route-node route-device" data-i18n="features.device">this device</span>
                 </div>
               </div>
             </article>
 
             <article class="feature-card feature-fallback reveal" style="--delay: 140ms">
               <span class="feature-index">03</span>
-              <h3>Smart Fallback</h3>
-              <p>
+              <h3 data-i18n="features.fallbackTitle">Smart Fallback</h3>
+              <p data-i18n="features.fallbackBody">
                 If the local engine is stopped or busy, Dodoi quietly retries through your last cloud
                 connection. You just see the translation.
               </p>
               <div class="fallback-visual" aria-hidden="true">
-                <span class="fallback-node fallback-local">local</span>
+                <span class="fallback-node fallback-local" data-i18n="features.localNode">local</span>
                 <span class="fallback-path"><span class="fallback-packet"></span></span>
-                <span class="fallback-node fallback-cloud">cloud</span>
-                <span class="fallback-status"><span class="status-dot"></span> seamless</span>
+                <span class="fallback-node fallback-cloud" data-i18n="features.cloudNodeShort">cloud</span>
+                <span class="fallback-status"><span class="status-dot"></span> <span data-i18n="features.seamless">seamless</span></span>
               </div>
             </article>
 
             <article class="feature-card feature-paste reveal" style="--delay: 210ms">
               <div class="feature-copy">
                 <span class="feature-index">04</span>
-                <h3>Paste-back, without the pause.</h3>
-                <p>
+                <h3 data-i18n="features.pasteTitle">Paste-back, without the pause.</h3>
+                <p data-i18n="features.pasteBody">
                   The result is copied and inserted into the app you came from, cursor still where you
                   left it. Your train of thought stays on the rails.
                 </p>
@@ -379,8 +446,8 @@
 
             <article class="feature-card feature-key reveal" style="--delay: 0ms">
               <span class="feature-index">05</span>
-              <h3>Your key stays yours.</h3>
-              <p>API keys live in a local <code>.env</code> file, masked in the UI, and never enter the renderer.</p>
+              <h3 data-i18n="features.keyTitle">Your key stays yours.</h3>
+              <p data-i18n="features.keyBody">API keys live in a local <code>.env</code> file, masked in the UI, and never enter the renderer.</p>
               <div class="key-visual" aria-hidden="true">
                 <span class="key-prefix">DODOI_API_KEY</span>
                 <span class="key-value">••••••••••••••••</span>
@@ -392,8 +459,8 @@
 
             <article class="feature-card feature-languages tilt reveal" style="--delay: 70ms">
               <span class="feature-index">06</span>
-              <h3>33 languages, mapped.</h3>
-              <p>FLORES-200 codes and automatic source detection, from Japanese to Arabic.</p>
+              <h3 data-i18n="features.languagesTitle">33 languages, mapped.</h3>
+              <p data-i18n="features.languagesBody">FLORES-200 codes and automatic source detection, from Japanese to Arabic.</p>
               <div class="language-orbit" aria-hidden="true">
                 <span class="lang-node" style="--i: 0">日</span>
                 <span class="lang-node" style="--i: 1">ES</span>
@@ -411,16 +478,16 @@
       <section class="section offline" id="offline" aria-labelledby="offline-title">
         <div class="shell offline-grid">
           <div class="offline-copy reveal">
-            <p class="eyebrow"><span class="eyebrow-dot"></span> Local engine</p>
-            <h2 id="offline-title">The cloud is<br /><span class="gradient-text">optional.</span></h2>
-            <p class="section-lead">
+            <p class="eyebrow"><span class="eyebrow-dot"></span> <span data-i18n="offline.eyebrow">Local engine</span></p>
+            <h2 id="offline-title"><span data-i18n="offline.title1">The cloud is</span><br /><span class="gradient-text" data-i18n="offline.title2">optional.</span></h2>
+            <p class="section-lead" data-i18n="offline.lead">
               Dodoi ships with an on-demand NLLB-200 3.3B engine. Download it once, and translation keeps
               working with no connection, no API key, and no text leaving your machine.
             </p>
             <ul class="check-list">
-              <li><span class="check-mark">✓</span> CTranslate2 INT8 · about 3.5 GB</li>
-              <li><span class="check-mark">✓</span> Bundled Python 3.12 runtime</li>
-              <li><span class="check-mark">✓</span> Real Stop control that releases RAM</li>
+              <li><span class="check-mark">✓</span> <span data-i18n="offline.check1">CTranslate2 INT8 · about 3.5 GB</span></li>
+              <li><span class="check-mark">✓</span> <span data-i18n="offline.check2">Bundled Python 3.12 runtime</span></li>
+              <li><span class="check-mark">✓</span> <span data-i18n="offline.check3">Real Stop control that releases RAM</span></li>
             </ul>
             <div class="offline-actions">
               <button
@@ -430,19 +497,19 @@
                 aria-pressed="false"
               >
                 <span class="button-led"></span>
-                <span data-offline-label>Simulate offline</span>
+                <span data-offline-label data-i18n="offline.simulate">Simulate offline</span>
               </button>
-              <span class="offline-footnote">No account. No API key. No requests.</span>
+              <span class="offline-footnote" data-i18n="offline.footnote">No account. No API key. No requests.</span>
             </div>
           </div>
 
           <div class="engine-card glass reveal" style="--delay: 120ms" data-engine-card>
             <div class="engine-head">
               <div>
-                <span class="engine-kicker">Local engine</span>
+                <span class="engine-kicker" data-i18n="offline.engineKicker">Local engine</span>
                 <h3>NLLB-200 <span>3.3B</span></h3>
               </div>
-              <span class="engine-state" data-engine-state aria-live="polite"><span class="status-dot"></span> Online</span>
+              <span class="engine-state" data-engine-state aria-live="polite"><span class="status-dot"></span> <span data-engine-state-label data-i18n="offline.online">Online</span></span>
             </div>
 
             <div class="engine-orbit" aria-hidden="true">
@@ -462,23 +529,23 @@
 
             <div class="engine-stats">
               <div class="engine-stat">
-                <span class="stat-label">Model</span>
-                <span class="stat-value">INT8 · CTranslate2</span>
+                <span class="stat-label" data-i18n="offline.modelLabel">Model</span>
+                <span class="stat-value" data-i18n="offline.modelValue">INT8 · CTranslate2</span>
               </div>
               <div class="engine-stat">
-                <span class="stat-label">Languages</span>
-                <span class="stat-value">33 targets</span>
+                <span class="stat-label" data-i18n="offline.languagesLabel">Languages</span>
+                <span class="stat-value" data-i18n="offline.languagesValue">33 targets</span>
               </div>
               <div class="engine-stat">
-                <span class="stat-label">Requests leaving</span>
+                <span class="stat-label" data-i18n="offline.requestsLabel">Requests leaving</span>
                 <span class="stat-value stat-accent" data-egress>0</span>
               </div>
             </div>
 
             <div class="engine-log" aria-hidden="true">
-              <span><i></i> Embedded Python runtime ready</span>
-              <span><i></i> Model loaded · 3.5 GB</span>
-              <span><i></i> Listening on localhost</span>
+              <span><i></i> <span data-i18n="offline.log1">Embedded Python runtime ready</span></span>
+              <span><i></i> <span data-i18n="offline.log2">Model loaded · 3.5 GB</span></span>
+              <span><i></i> <span data-engine-log data-i18n="offline.log3">Listening on localhost</span></span>
             </div>
           </div>
         </div>
@@ -488,10 +555,10 @@
         <div class="shell">
           <div class="section-head section-head-row reveal">
             <div>
-              <p class="eyebrow"><span class="eyebrow-dot"></span> A closer look</p>
-              <h2 id="product-title">Made to disappear<br /><span class="soft-text">into your flow.</span></h2>
+              <p class="eyebrow"><span class="eyebrow-dot"></span> <span data-i18n="product.eyebrow">A closer look</span></p>
+              <h2 id="product-title"><span data-i18n="product.title1">Made to disappear</span><br /><span class="soft-text" data-i18n="product.title2">into your flow.</span></h2>
             </div>
-            <p class="section-lead section-lead-right">
+            <p class="section-lead section-lead-right" data-i18n="product.lead">
               A translator should feel like a reflex, not a destination. Dodoi opens over your work and
               gets out of the way.
             </p>
@@ -499,9 +566,9 @@
 
           <div class="screenshot-shell reveal">
             <div class="screenshot-toolbar">
-              <div class="tab-list" role="tablist" aria-label="Dodoi screenshots">
-                <button class="tab is-active" id="tab-overlay" role="tab" aria-selected="true" aria-controls="shot-panel" data-shot="overlay">Floating overlay</button>
-                <button class="tab" id="tab-settings" role="tab" aria-selected="false" aria-controls="shot-panel" tabindex="-1" data-shot="settings">Control room</button>
+              <div class="tab-list" role="tablist" aria-label="Dodoi screenshots" data-i18n-aria="product.tabsLabel">
+                <button class="tab is-active" id="tab-overlay" role="tab" aria-selected="true" aria-controls="shot-panel" data-shot="overlay" data-i18n="product.tabOverlay">Floating overlay</button>
+                <button class="tab" id="tab-settings" role="tab" aria-selected="false" aria-controls="shot-panel" tabindex="-1" data-shot="settings" data-i18n="product.tabSettings">Control room</button>
               </div>
               <span class="screenshot-note" id="shotNote">Summon · type · translate</span>
             </div>
@@ -513,6 +580,7 @@
                 id="shotImage"
                 width="760"
                 height="442"
+                data-i18n-alt="product.overlayAlt"
               />
               <div class="shot-corner shot-corner-tl" aria-hidden="true"></div>
               <div class="shot-corner shot-corner-br" aria-hidden="true"></div>
@@ -524,8 +592,8 @@
       <section class="section how" id="how" aria-labelledby="how-title">
         <div class="shell">
           <div class="section-head reveal">
-            <p class="eyebrow"><span class="eyebrow-dot"></span> Three moves</p>
-            <h2 id="how-title">In and out.<br /><span class="soft-text">Nothing in between.</span></h2>
+            <p class="eyebrow"><span class="eyebrow-dot"></span> <span data-i18n="how.eyebrow">Three moves</span></p>
+            <h2 id="how-title"><span data-i18n="how.title1">In and out.</span><br /><span class="soft-text" data-i18n="how.title2">Nothing in between.</span></h2>
           </div>
 
           <div class="steps">
@@ -535,24 +603,24 @@
               <div class="step-icon">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="3" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M7 10h3m-1.5 0v3m4-3h4m-4 2h4m-2 1.5v2" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
               </div>
-              <h3>Summon</h3>
-              <p>Press <kbd>Shift</kbd> + <kbd>~</kbd> anywhere. Dodoi appears on the display you're using.</p>
+              <h3 data-i18n="how.step1Title">Summon</h3>
+              <p data-i18n="how.step1Body">Press <kbd>Shift</kbd> + <kbd>~</kbd> anywhere. Dodoi appears on the display you're using.</p>
             </article>
             <article class="step reveal" style="--delay: 90ms">
               <span class="step-number">02</span>
               <div class="step-icon">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 11h10M4 16h13" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="m17.5 15 .7 2.1 2.1.7-2.1.7-.7 2.1-.7-2.1-2.1-.7 2.1-.7.7-2.1Z" fill="currentColor"/></svg>
               </div>
-              <h3>Say it</h3>
-              <p>Type or paste anything. Dodoi detects the source and keeps the tone, dialect, and formatting.</p>
+              <h3 data-i18n="how.step2Title">Say it</h3>
+              <p data-i18n="how.step2Body">Type or paste anything. Dodoi detects the source and keeps the tone, dialect, and formatting.</p>
             </article>
             <article class="step reveal" style="--delay: 180ms">
               <span class="step-number">03</span>
               <div class="step-icon">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h14m0 0-4-4m4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 6v12" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" opacity=".45"/></svg>
               </div>
-              <h3>Move on</h3>
-              <p>Hit <kbd>Ctrl</kbd> + <kbd>↵</kbd>. The translation is copied and pasted back where you were typing.</p>
+              <h3 data-i18n="how.step3Title">Move on</h3>
+              <p data-i18n="how.step3Body">Hit <kbd>Ctrl</kbd> + <kbd>↵</kbd>. The translation is copied and pasted back where you were typing.</p>
             </article>
           </div>
         </div>
@@ -563,9 +631,9 @@
           <div class="download-panel glass reveal">
             <div class="download-glow" aria-hidden="true"></div>
             <div class="download-head">
-              <p class="eyebrow"><span class="eyebrow-dot"></span> Get Dodoi</p>
-              <h2 id="download-title">Take it<br /><span class="gradient-text">everywhere.</span></h2>
-              <p class="section-lead">
+              <p class="eyebrow"><span class="eyebrow-dot"></span> <span data-i18n="download.eyebrow">Get Dodoi</span></p>
+              <h2 id="download-title"><span data-i18n="download.title1">Take it</span><br /><span class="gradient-text" data-i18n="download.title2">everywhere.</span></h2>
+              <p class="section-lead" data-i18n="download.lead">
                 Free and open source. Available for the three desktops you actually use.
               </p>
               <div class="download-actions">
@@ -579,25 +647,25 @@
                   <svg class="button-download-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2.6v7.1m0 0 2.7-2.7M8 9.7 5.3 7M3 12.2v1.2h10v-1.2" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/></svg>
                   <span data-download-label>Download for Windows</span>
                 </a>
-                <a class="button button-ghost" href="https://github.com/azzamalessa188-star/dodoi" target="_blank" rel="noreferrer">Browse the source</a>
+                <a class="button button-ghost" href="https://github.com/azzamalessa188-star/dodoi" target="_blank" rel="noreferrer" data-i18n="download.browse">Browse the source</a>
               </div>
               <p class="download-note">
                 <span class="pulse-dot"></span>
-                v0.2.0 · Direct downloads · unsigned builds may ask for your OS approval
+                <span data-i18n="download.note">v0.2.0 · Direct downloads · unsigned builds may ask for your OS approval</span>
               </p>
             </div>
 
             <div class="platform-list" id="platformList">
               <div class="platform-card platform-group">
                 <span class="platform-icon platform-icon--img">
-                  <img src="assets/windows-logo.png" alt="Windows logo" />
+                  <img src="assets/windows-logo.png" alt="Windows logo" data-i18n-alt="download.altWindows" />
                 </span>
                 <span class="platform-copy">
                   <span class="platform-name">Windows</span>
                   <span class="platform-meta">10 / 11 · x64</span>
                   <span class="platform-versions">
                     <a class="version-link" target="_blank" rel="noopener noreferrer" href="https://github.com/azzamalessa188-star/dodoi/releases/download/v0.2.0/Dodoi-Setup-0.2.0-x64.zip">
-                      <span class="version-label">Portable</span>
+                      <span class="version-label" data-i18n="download.portable">Portable</span>
                       <span class="version-ext">.zip</span>
                     </a>
                   </span>
@@ -605,7 +673,7 @@
               </div>
               <div class="platform-card platform-group">
                 <span class="platform-icon platform-icon--img">
-                  <img src="assets/macos-logo.png" alt="macOS logo" />
+                  <img src="assets/macos-logo.png" alt="macOS logo" data-i18n-alt="download.altMac" />
                 </span>
                 <span class="platform-copy">
                   <span class="platform-name">macOS</span>
@@ -624,7 +692,7 @@
               </div>
               <div class="platform-card platform-group">
                 <span class="platform-icon platform-icon--img">
-                  <img src="assets/linux-logo.png" alt="Linux logo" />
+                  <img src="assets/linux-logo.png" alt="Linux logo" data-i18n-alt="download.altLinux" />
                 </span>
                 <span class="platform-copy">
                   <span class="platform-name">Linux</span>
@@ -635,7 +703,7 @@
                       <span class="version-ext">.AppImage</span>
                     </a>
                     <a class="version-link" target="_blank" rel="noopener noreferrer" href="https://github.com/azzamalessa188-star/dodoi/releases/download/v0.2.0/Dodoi-0.2.0-amd64.deb">
-                      <span class="version-label">Debian / Ubuntu</span>
+                      <span class="version-label" data-i18n="download.debian">Debian / Ubuntu</span>
                       <span class="version-ext">.deb</span>
                     </a>
                   </span>
@@ -650,14 +718,14 @@
         <div class="closing-glow" aria-hidden="true"></div>
         <div class="shell closing-inner reveal">
           <span class="closing-mark"><svg viewBox="0 0 32 32" aria-hidden="true"><use href="#dodoi-mark"></use></svg></span>
-          <p class="eyebrow"><span class="eyebrow-dot"></span> The right words, right where you are</p>
-          <h2 id="closing-title">Stay in your flow.</h2>
-          <p>The world can keep its languages. You keep your train of thought.</p>
+          <p class="eyebrow"><span class="eyebrow-dot"></span> <span data-i18n="closing.eyebrow">The right words, right where you are</span></p>
+          <h2 id="closing-title" data-i18n="closing.title">Stay in your flow.</h2>
+          <p data-i18n="closing.body">The world can keep its languages. You keep your train of thought.</p>
           <div class="closing-actions">
-            <a class="button" href="#download">Get Dodoi</a>
+            <a class="button" href="#download" data-i18n="closing.get">Get Dodoi</a>
             <button class="button button-ghost summon-trigger" type="button">
               <span class="keycap-group"><kbd>Shift</kbd><kbd>~</kbd></span>
-              <span>Summon the preview</span>
+              <span data-i18n="closing.summon">Summon the preview</span>
             </button>
           </div>
         </div>
@@ -667,63 +735,69 @@
     <footer class="site-footer">
       <div class="shell footer-grid">
         <div class="footer-brand">
-          <a class="brand" href="#top" aria-label="Dodoi home">
+          <a class="brand" href="#top" aria-label="Dodoi home" data-i18n-aria="brand.home">
             <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><use href="#dodoi-mark"></use></svg>
             <span class="brand-copy">
               <span class="brand-name">Dodoi</span>
-              <span class="brand-tagline">AI translator</span>
+              <span class="brand-tagline" data-i18n="brand.tagline">AI translator</span>
             </span>
           </a>
-          <p>The right words, right where you are.</p>
+          <p data-i18n="footer.tagline">The right words, right where you are.</p>
         </div>
         <div class="footer-links">
-          <a href="#features">Features</a>
-          <a href="#offline">Offline</a>
-          <a href="#product">A closer look</a>
-          <a href="#download">Download</a>
+          <a href="#features" data-i18n="nav.features">Features</a>
+          <a href="#offline" data-i18n="nav.offline">Offline</a>
+          <a href="#product" data-i18n="nav.product">A closer look</a>
+          <a href="#download" data-i18n="nav.download">Download</a>
           <a href="https://github.com/azzamalessa188-star/dodoi" target="_blank" rel="noreferrer">GitHub ↗</a>
         </div>
         <div class="footer-meta">
-          <span>MIT licensed</span>
-          <span>Built with Electron + NLLB-200</span>
-          <span>© 2026 Dodoi</span>
+          <span data-i18n="footer.license">MIT licensed</span>
+          <span data-i18n="footer.built">Built with Electron + NLLB-200</span>
+          <span data-i18n="footer.copyright">© 2026 Dodoi</span>
         </div>
       </div>
     </footer>
+
+    <button class="back-to-top" id="backToTop" type="button" aria-label="Back to top" data-i18n-aria="controls.toTop">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 19V5m0 0-6 6m6-6 6 6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </button>
 
     <div class="summon-layer" id="summonLayer" hidden>
       <div class="summon-backdrop" data-summon-close></div>
       <div class="summon-dialog" role="dialog" aria-modal="true" aria-labelledby="summon-title" aria-describedby="summon-desc">
         <div class="summon-topline">
-          <span class="summon-title" id="summon-title"><span class="status-dot"></span> Dodoi preview</span>
-          <button class="icon-button" type="button" data-summon-close aria-label="Close preview">
+          <span class="summon-title" id="summon-title"><span class="status-dot"></span> <span data-i18n="summon.title">Dodoi preview</span></span>
+          <button class="icon-button" type="button" data-summon-close aria-label="Close preview" data-i18n-aria="summon.close">
             <svg viewBox="0 0 24 24"><path d="m7 7 10 10M17 7 7 17" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
           </button>
         </div>
-        <p class="summon-desc" id="summon-desc">This is the web preview. In the app, Dodoi opens above whatever you're working in.</p>
+        <p class="summon-desc" id="summon-desc" data-i18n="summon.desc">This is the web preview. In the app, Dodoi opens above whatever you're working in.</p>
         <div class="summon-window glass">
           <div class="summon-window-head">
             <span class="panel-brand">
               <svg class="panel-mark" viewBox="0 0 32 32" aria-hidden="true"><use href="#dodoi-mark"></use></svg>
               <span class="panel-name">Dodoi</span>
             </span>
-            <span class="panel-status"><span class="status-dot"></span> Ready</span>
+            <span class="panel-status"><span class="status-dot"></span> <span data-i18n="summon.ready">Ready</span></span>
           </div>
           <div class="summon-body">
-            <span class="field-hint">From any app · Auto-detect</span>
-            <p class="summon-source" id="summonSource">The right words, right where you are.</p>
+            <span class="field-hint" data-i18n="summon.fromApp">From any app · Auto-detect</span>
+            <p class="summon-source" id="summonSource" lang="en" dir="ltr">The right words, right where you are.</p>
             <div class="translation-rule"><span class="rule-line"></span><span class="rule-label"><span class="live-dot"></span><span id="summonTarget">Japanese</span></span><span class="rule-line"></span></div>
             <p class="summon-result" id="summonResult" lang="ja" dir="ltr" aria-live="polite">あなたのいる場所に、ふさわしい言葉を。</p>
           </div>
           <div class="summon-footer">
             <span class="language-pulse"></span>
-            <span>Auto-detect</span>
+            <span data-i18n="hero.autoDetect">Auto-detect</span>
             <span class="summon-footer-arrow">→</span>
             <span id="summonTargetFooter">Japanese</span>
-            <button class="translate-button" id="summonNext" type="button">Next phrase <span class="button-shortcut"><kbd>↵</kbd></span></button>
+            <button class="translate-button" id="summonNext" type="button"><span data-i18n="summon.next">Next phrase</span> <span class="button-shortcut"><kbd>↵</kbd></span></button>
           </div>
         </div>
-        <div class="summon-hint"><kbd>Esc</kbd> to close · <kbd>Shift</kbd><kbd>~</kbd> to summon</div>
+        <div class="summon-hint" data-i18n="summon.hint"><kbd>Esc</kbd> to close · <kbd>Shift</kbd><kbd>~</kbd> to summon</div>
       </div>
     </div>
   </body>
