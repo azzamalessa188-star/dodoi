@@ -28,7 +28,9 @@ const HEALTH_TIMEOUT_MS = 15_000
 const STOP_TIMEOUT_MS = 6_000
 const COMMAND_TIMEOUT_MS = 0
 const REQUIRED_DISK_BYTES = 24 * 1024 ** 3
-const RECOMMENDED_RAM_BYTES = 16 * 1024 ** 3
+// Integrated GPUs reserve part of system memory, so a 16 GB machine often
+// reports about 15.7 GB. Treat 14.5 GB as the practical floor.
+const RECOMMENDED_RAM_BYTES = 14.5 * 1024 ** 3
 const LOG_LIMIT_BYTES = 5 * 1024 * 1024
 const MAX_LOG_LINES = 80
 
@@ -84,6 +86,7 @@ function parsePythonVersion(output) {
 }
 
 function pythonRank(candidate) {
+  if (candidate.isBundled) return -2
   if (candidate.isVenv) return -1
   const { major, minor } = candidate
   if (major !== 3) return 100
@@ -117,6 +120,7 @@ class LocalEngine extends EventEmitter {
     resourcesPath,
     isPackaged = false,
     platform = process.platform,
+    arch = process.arch,
     env = process.env,
     logger = console,
     spawnImpl = spawn,
@@ -127,6 +131,7 @@ class LocalEngine extends EventEmitter {
 
     if (!userDataDir) throw new Error('LocalEngine requires a userDataDir')
     this.platform = platform
+    this.arch = arch
     this.isWindows = platform === 'win32'
     this.env = env
     this.logger = logger
@@ -164,6 +169,17 @@ class LocalEngine extends EventEmitter {
       ? path.join(resourcesPath || path.join(appPath || '', '..'), 'local-engine')
       : path.join(appPath || path.join(__dirname, '..', '..'), 'scripts', 'local')
 
+    const platformKey = this.isWindows ? 'win' : platform === 'darwin' ? 'mac' : 'linux'
+    this.bundledPythonDir = isPackaged
+      ? path.join(resourcesPath || path.join(appPath || '', '..'), 'python-embedded')
+      : path.join(
+          appPath || path.join(__dirname, '..', '..'),
+          'resources',
+          'python-embedded',
+          `${platformKey}-${arch}`,
+        )
+    this.bundledPythonManifest = path.join(this.bundledPythonDir, 'runtime.json')
+
     this.phase = 'idle'
     this.installed = false
     this.modelSizeBytes = 0
@@ -185,6 +201,7 @@ class LocalEngine extends EventEmitter {
     this.cancelled = false
     this.depsReady = false
     this.venvReady = false
+    this.runtimeReady = false
     this.lastDiskCheck = 0
     this.lastDiskInfo = null
 
@@ -263,7 +280,10 @@ class LocalEngine extends EventEmitter {
           minor: this.python.minor,
           path: this.python.command,
           isVenv: Boolean(this.python.isVenv),
+          isBundled: Boolean(this.python.isBundled),
+          runtime: this.python.isBundled ? 'bundled' : this.python.isVenv ? 'venv' : 'system',
           venvReady: this.venvReady || isExecutable(this.venvPythonPath()),
+          runtimeReady: this.runtimeReady,
           recommended: this.python.major === 3 && this.python.minor >= 10 && this.python.minor <= 13,
         }
       : {
@@ -271,7 +291,10 @@ class LocalEngine extends EventEmitter {
           version: '',
           path: '',
           isVenv: false,
+          isBundled: false,
+          runtime: 'none',
           venvReady: false,
+          runtimeReady: false,
           recommended: false,
         }
 
@@ -328,6 +351,20 @@ class LocalEngine extends EventEmitter {
       : path.join(this.venvDir, 'bin', 'python')
   }
 
+  bundledPythonPath() {
+    return path.join(this.bundledPythonDir, ...(this.isWindows ? ['python.exe'] : ['bin', 'python3']))
+  }
+
+  hasBundledPython() {
+    return (
+      fs.existsSync(this.bundledPythonManifest) && fs.existsSync(this.bundledPythonPath())
+    )
+  }
+
+  runtimePythonPath() {
+    return this.python?.isBundled ? this.python.command : this.venvPythonPath()
+  }
+
   discoverPython() {
     const candidates = []
     const add = (candidate) => {
@@ -337,6 +374,9 @@ class LocalEngine extends EventEmitter {
       candidates.push({ ...candidate, key })
     }
 
+    if (this.env.DODOI_DISABLE_BUNDLED_PYTHON !== '1' && this.hasBundledPython()) {
+      add({ command: this.bundledPythonPath(), args: [], isBundled: true })
+    }
     const venvPython = this.venvPythonPath()
     if (isExecutable(venvPython) || fs.existsSync(venvPython)) {
       add({ command: venvPython, args: [], isVenv: true })
@@ -372,6 +412,7 @@ class LocalEngine extends EventEmitter {
           ...candidate,
           ...version,
           isVenv: Boolean(candidate.isVenv),
+          isBundled: Boolean(candidate.isBundled),
         })
       } catch {
         // Try the next interpreter.
@@ -387,7 +428,7 @@ class LocalEngine extends EventEmitter {
     const selected = found[0]
     this.log(
       'python',
-      `Using ${selected.command} ${selected.version}${selected.isVenv ? ' (venv)' : ''}`,
+      `Using ${selected.command} ${selected.version}${selected.isBundled ? ' (bundled)' : selected.isVenv ? ' (venv)' : ''}`,
     )
     return selected
   }
@@ -417,7 +458,11 @@ class LocalEngine extends EventEmitter {
   }
 
   idleMessage() {
-    if (!this.python) return 'Python 3.10 or newer is required for the local engine.'
+    if (!this.python) {
+      return this.hasBundledPython()
+        ? 'The bundled Python runtime could not start. Reinstall Dodoi to restore it.'
+        : 'Python 3.10 or newer is required for the local engine.'
+    }
     if (this.installed) {
       return this.modelBundled
         ? 'Bundled model ready. Start the engine to translate offline.'
@@ -432,6 +477,7 @@ class LocalEngine extends EventEmitter {
     this.truncateLog()
     this.python = this.discoverPython()
     this.venvReady = fs.existsSync(this.venvPythonPath())
+    this.runtimeReady = Boolean(this.python?.isBundled)
     this.refreshInstallation()
     this.message = this.idleMessage()
     this.emitStatus()
@@ -564,8 +610,8 @@ class LocalEngine extends EventEmitter {
 
   async dependenciesReady() {
     if (this.depsReady) return true
-    const python = this.venvPythonPath()
-    if (!fs.existsSync(python)) return false
+    const python = this.runtimePythonPath()
+    if (!python || !fs.existsSync(python)) return false
 
     try {
       await this.runCommand(
@@ -574,10 +620,11 @@ class LocalEngine extends EventEmitter {
           '-c',
           'import ctranslate2, transformers, sentencepiece, huggingface_hub, torch; print("ok")',
         ],
-        { label: 'dependencies', timeout: 30_000 },
+        { label: 'dependencies', timeout: 60_000 },
       )
       this.depsReady = true
-      this.venvReady = true
+      this.runtimeReady = true
+      if (!this.python?.isBundled) this.venvReady = true
       return true
     } catch (error) {
       this.log('dependencies', `Import check failed: ${error.message}`)
@@ -589,9 +636,20 @@ class LocalEngine extends EventEmitter {
     this.ensureDirectories()
     if (!this.python?.found) {
       throw new TranslationError(
-        'Python 3.10 or newer is required for the local engine. Install Python and restart Dodoi.',
+        this.hasBundledPython()
+          ? 'The bundled Python runtime could not start. Reinstall Dodoi to restore the local engine.'
+          : 'Python 3.10 or newer is required for the local engine. Install Python and restart Dodoi.',
         'LOCAL_PYTHON_MISSING',
         { field: 'localEngine' },
+      )
+    }
+
+    if (this.python.isBundled) {
+      if (await this.dependenciesReady()) return this.python.command
+      throw new TranslationError(
+        'The bundled Python runtime is incomplete. Reinstall Dodoi to restore the local engine.',
+        'LOCAL_RUNTIME_MISSING',
+        { field: 'localEngine', detail: this.bundledPythonDir },
       )
     }
 
@@ -724,7 +782,7 @@ class LocalEngine extends EventEmitter {
       active: true,
       stage: 'python',
       percent: 1,
-      message: 'Checking Python and disk space…',
+      message: 'Checking the local runtime and disk space…',
       bytes: 0,
       totalBytes: 0,
       indeterminate: false,
@@ -738,7 +796,9 @@ class LocalEngine extends EventEmitter {
       this.python = this.discoverPython()
       if (!this.python) {
         throw new TranslationError(
-          'Python 3.10 or newer is required for the local engine. Install Python and restart Dodoi.',
+          this.hasBundledPython()
+            ? 'The bundled Python runtime could not start. Reinstall Dodoi to restore the local engine.'
+            : 'Python 3.10 or newer is required for the local engine. Install Python and restart Dodoi.',
           'LOCAL_PYTHON_MISSING',
           { field: 'localEngine' },
         )
@@ -860,7 +920,7 @@ class LocalEngine extends EventEmitter {
       )
     }
 
-    const python = this.venvPythonPath()
+    const python = this.runtimePythonPath()
     const args = [
       scriptPath,
       '--repo',
@@ -1052,7 +1112,7 @@ class LocalEngine extends EventEmitter {
     }
 
     const token = crypto.randomBytes(24).toString('hex')
-    const python = this.venvPythonPath()
+    const python = this.runtimePythonPath()
     const args = [
       scriptPath,
       '--model-dir',

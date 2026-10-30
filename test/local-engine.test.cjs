@@ -56,6 +56,7 @@ test('formats bytes and parses Python versions', () => {
 })
 
 test('ranks Python interpreters for ML wheel compatibility', () => {
+  assert.equal(pythonRank({ isBundled: true, major: 3, minor: 12 }), -2)
   assert.equal(pythonRank({ isVenv: true, major: 3, minor: 14 }), -1)
   assert.equal(pythonRank({ major: 3, minor: 12 }), 0)
   assert.equal(pythonRank({ major: 3, minor: 13 }), 1)
@@ -89,6 +90,7 @@ test('initializes the local engine and reports its readiness', async () => {
   assert.equal(status.model.repo, 'facebook/nllb-200-3.3B')
   assert.equal(status.disk.requiredBytes, REQUIRED_DISK_BYTES)
   assert.equal(status.memory.recommendedBytes, RECOMMENDED_RAM_BYTES)
+  assert.equal(RECOMMENDED_RAM_BYTES, 14.5 * 1024 ** 3)
   assert.match(status.message, /Download the model/)
   assert.ok(fs.existsSync(engine.engineHome))
   assert.ok(fs.existsSync(engine.logPath))
@@ -99,6 +101,64 @@ test('initializes the local engine and reports its readiness', async () => {
   assert.equal(installed.phase, 'idle')
   assert.equal(installed.model.sizeBytes, 2051)
   assert.match(installed.message, /Model ready/)
+})
+
+test('prefers a provisioned bundled Python runtime', async () => {
+  const appDirectory = fs.mkdtempSync(path.join(os.tmpdir(), 'dodoi-bundled-python-'))
+  const runtimeDirectory = path.join(
+    appDirectory,
+    'resources',
+    'python-embedded',
+    'linux-x64',
+  )
+  fs.mkdirSync(path.join(runtimeDirectory, 'bin'), { recursive: true })
+  fs.writeFileSync(
+    path.join(runtimeDirectory, 'runtime.json'),
+    JSON.stringify({ schema: 1, python: '3.12.16', platform: 'linux', arch: 'x64' }),
+  )
+  const bundledPython = path.join(runtimeDirectory, 'bin', 'python3')
+  fs.writeFileSync(bundledPython, '#!/bin/sh\n')
+  fs.chmodSync(bundledPython, 0o755)
+
+  const calls = []
+  const { engine } = makeEngine({
+    appPath: appDirectory,
+    spawnSyncImpl: (command, args) => {
+      calls.push({ command, args })
+      return { stdout: 'Python 3.12.16\n', stderr: '' }
+    },
+  })
+
+  const status = await engine.init()
+  assert.equal(engine.bundledPythonDir, runtimeDirectory)
+  assert.equal(engine.bundledPythonPath(), bundledPython)
+  assert.equal(engine.python.command, bundledPython)
+  assert.equal(status.python.isBundled, true)
+  assert.equal(status.python.runtime, 'bundled')
+  assert.equal(status.python.version, '3.12.16')
+  assert.equal(status.python.recommended, true)
+  assert.deepEqual(calls[0], { command: bundledPython, args: ['--version'] })
+})
+
+test('resolves the packaged bundled Python runtime under resources', () => {
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'dodoi-bundled-runtime-packaged-'))
+  const resources = path.join(directory, 'resources')
+  const engine = new LocalEngine({
+    userDataDir: directory,
+    appPath: path.join(directory, 'app.asar'),
+    resourcesPath: resources,
+    isPackaged: true,
+    platform: 'win32',
+    arch: 'x64',
+    env: {},
+    logger: { log() {}, warn() {}, error() {} },
+  })
+
+  assert.equal(engine.bundledPythonDir, path.join(resources, 'python-embedded'))
+  assert.equal(
+    engine.bundledPythonPath(),
+    path.join(resources, 'python-embedded', 'python.exe'),
+  )
 })
 
 test('prefers a bundled model over one downloaded to user data', async () => {

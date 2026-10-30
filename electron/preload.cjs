@@ -28,6 +28,11 @@ contextBridge.exposeInMainWorld('dodoi', {
   openLocalLog: () => ipcRenderer.invoke('local:open-log'),
   onLocalStatus: (callback) => subscribe('local:status', callback),
 
+  getUpdateStatus: () => ipcRenderer.invoke('updates:get'),
+  checkForUpdates: () => ipcRenderer.invoke('updates:check'),
+  installUpdate: () => ipcRenderer.invoke('updates:install'),
+  onUpdateStatus: (callback) => subscribe('updates:status', callback),
+
   translate: (text) => ipcRenderer.invoke('translate:run', text),
   hideOverlay: () => ipcRenderer.send('overlay:hide'),
   openSettings: () => ipcRenderer.send('overlay:open-settings'),

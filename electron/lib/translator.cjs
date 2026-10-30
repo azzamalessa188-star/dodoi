@@ -209,10 +209,118 @@ function firstTextPart(content) {
     .join('')
 }
 
+function firstTextPart(content) {
+  if (typeof content === 'string') return content
+  if (!Array.isArray(content)) return ''
+
+  return content
+    .filter((part) => part && typeof part === 'object')
+    .map((part) => {
+      if (typeof part.text === 'string') return part.text
+      if (typeof part.content === 'string') return part.content
+      if (typeof part.value === 'string') return part.value
+      return ''
+    })
+    .join('')
+}
+
+function cleanTranslation(text) {
+  if (typeof text !== 'string') return ''
+  let result = text
+  // Strip thinking/reasoning tags embedded in content
+  result = result.replace(/<think(?:ing)?>[\s\S]*?<\/think(?:ing)?>/gi, '')
+  result = result.replace(/<reasoning>[\s\S]*?<\/reasoning>/gi, '')
+  result = result.replace(/<thought>[\s\S]*?<\/thought>/gi, '')
+  result = result.trim()
+  // If content was entirely wrapped in tags, try to extract the remaining text
+  if (!result && text.trim()) {
+    result = text.replace(/<\/?[^>]+>/g, '').trim()
+  }
+  return result
+}
+
 function extractTranslation(data) {
   const choice = data?.choices?.[0]
-  const content = firstTextPart(choice?.message?.content) || firstTextPart(choice?.text)
-  return content.trim()
+  if (!choice) return ''
+
+  // 1. Standard Schema: primary content field
+  let candidate = ''
+  candidate = firstTextPart(choice?.message?.content) || firstTextPart(choice?.text)
+  if (candidate) {
+    const cleaned = cleanTranslation(candidate)
+    if (cleaned) return cleaned
+  }
+
+  // 2. Reasoning/Thinking Schema: bypass reasoning fields, look for final result
+  const reasoningFields = [
+    choice?.message?.reasoning,
+    choice?.message?.thought,
+    choice?.message?.thinking,
+    choice?.reasoning,
+    choice?.thought,
+    choice?.thinking,
+  ]
+  for (const field of reasoningFields) {
+    if (typeof field === 'string' && field.trim()) {
+      // Some models put the final answer after the reasoning in the same field
+      const cleaned = cleanTranslation(field)
+      if (cleaned) return cleaned
+    }
+  }
+
+  // Some models put the final answer in content after reasoning tags (handled above)
+  // but also check if content is an array of parts with type 'text'
+  if (Array.isArray(choice?.message?.content)) {
+    for (const part of choice.message.content) {
+      if (part && typeof part === 'object') {
+        if (part.type === 'text' && typeof part.text === 'string') {
+          const cleaned = cleanTranslation(part.text)
+          if (cleaned) return cleaned
+        }
+        if (typeof part.content === 'string') {
+          const cleaned = cleanTranslation(part.content)
+          if (cleaned) return cleaned
+        }
+      }
+    }
+  }
+
+  // 3. Alternative/Array Schema: inspect alternative fields or nested arrays
+  const alternatives = [
+    choice?.delta?.content,
+    choice?.delta?.text,
+    choice?.message?.delta?.content,
+    data?.output?.text,
+    data?.output?.content,
+    data?.text,
+    data?.content,
+  ]
+  for (const alt of alternatives) {
+    if (typeof alt === 'string' && alt.trim()) {
+      const cleaned = cleanTranslation(alt)
+      if (cleaned) return cleaned
+    }
+    if (Array.isArray(alt)) {
+      const joined = alt.map((x) => (typeof x === 'string' ? x : x?.text || x?.content || '')).join('')
+      if (joined.trim()) {
+        const cleaned = cleanTranslation(joined)
+        if (cleaned) return cleaned
+      }
+    }
+  }
+
+  // Last resort: try to extract from any string field in the choice
+  if (choice && typeof choice === 'object') {
+    for (const key of Object.keys(choice)) {
+      const val = choice[key]
+      if (typeof val === 'string' && val.trim()) {
+        const cleaned = cleanTranslation(val)
+        if (cleaned && cleaned.length > 0) return cleaned
+      }
+    }
+  }
+
+  return ''
 }
 
 function safeErrorMessage(body, fallback) {

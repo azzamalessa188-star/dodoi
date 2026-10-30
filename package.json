@@ -1,14 +1,18 @@
 {
   "name": "dodoi",
   "productName": "Dodoi",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A floating AI translator for every app.",
-  "homepage": "https://dodoi.app",
+  "homepage": "https://github.com/azzamalessa188-star/dodoi",
   "main": "electron/main.cjs",
   "desktopName": "dodoi.desktop",
   "author": "Dodoi",
   "license": "MIT",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/azzamalessa188-star/dodoi.git"
+  },
   "scripts": {
     "dev": "concurrently -k -s first \"vite --host 127.0.0.1 --port 5173 --strictPort\" \"wait-on tcp:5173 && cross-env VITE_DEV_SERVER_URL=http://127.0.0.1:5173 electron .\"",
     "build": "vite build",
@@ -16,15 +20,23 @@
     "test": "node --test test/*.test.cjs",
     "icons": "node scripts/generate-icons.cjs",
     "verify:model": "node scripts/verify-local-model.cjs",
+    "verify:packaged": "node scripts/verify-packaged-runtime.cjs",
+    "python:provision": "node scripts/provision-python.cjs",
+    "merge:update-manifests": "node scripts/merge-update-manifests.cjs",
     "dist": "npm run build && electron-builder --publish never",
+    "dist:embedded": "npm run python:provision && npm run dist",
     "dist:win": "npm run build && electron-builder --win --x64 --publish never",
     "dist:mac": "npm run build && electron-builder --mac --publish never",
+    "dist:mac:all": "npm run build && electron-builder --mac dmg:x64 dmg:arm64 zip:x64 zip:arm64 --publish never",
+    "dist:mac:x64": "npm run build && electron-builder --mac --x64 --publish never",
+    "dist:mac:arm64": "npm run build && electron-builder --mac --arm64 --publish never",
     "dist:linux": "npm run build && electron-builder --linux --x64 --publish never"
   },
   "dependencies": {
     "@fontsource-variable/inter": "^5.2.8",
     "@fontsource-variable/space-grotesk": "^5.2.9",
-    "dotenv": "^17.2.3"
+    "dotenv": "^17.2.3",
+    "electron-updater": "^6.8.11"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.1.16",
@@ -32,6 +44,7 @@
     "cross-env": "^10.1.0",
     "electron": "^39.2.1",
     "electron-builder": "^26.0.12",
+    "js-yaml": "^4.3.2",
     "tailwindcss": "^4.1.16",
     "vite": "^7.2.2",
     "wait-on": "^9.0.1"
@@ -64,6 +77,13 @@
         ]
       },
       {
+        "from": "resources/python-embedded/${os}-${arch}",
+        "to": "python-embedded",
+        "filter": [
+          "**/*"
+        ]
+      },
+      {
         "from": "local-models",
         "to": "local-engine/models",
         "filter": [
@@ -71,16 +91,18 @@
         ]
       }
     ],
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "azzamalessa188-star",
+        "repo": "dodoi"
+      }
+    ],
     "mac": {
       "category": "public.app-category.productivity",
       "target": [
-        {
-          "target": "dmg",
-          "arch": [
-            "x64",
-            "arm64"
-          ]
-        }
+        "dmg",
+        "zip"
       ],
       "icon": "build/icon.icns",
       "artifactName": "${productName}-${version}-${arch}.${ext}",

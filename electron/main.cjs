@@ -26,6 +26,7 @@ const {
 const { LOCAL_LANGUAGES, LOCAL_PROVIDER } = require('./lib/local-languages.cjs')
 const { LocalEngine } = require('./lib/local-engine.cjs')
 const { AUTOSTART_ARG, StartupManager } = require('./lib/startup.cjs')
+const { UpdateManager } = require('./lib/updater.cjs')
 const {
   MAX_INPUT_CHARS,
   OPENROUTER_FREE_MODEL,
@@ -46,6 +47,7 @@ const PASTE_DELAY_MS = 80
 let configStore = null
 let automation = null
 let localEngine = null
+let updateManager = null
 let startupManager = null
 let overlayWindow = null
 let settingsWindow = null
@@ -599,6 +601,7 @@ function getSettingsView() {
     localStatus: localEngine ? localEngine.getStatus() : null,
     localLanguages: LOCAL_LANGUAGES.map((language) => language.label),
     startupSupported: Boolean(startupManager?.supported),
+    update: updateManager ? updateManager.getStatus() : null,
     version: app.getVersion(),
     platform: process.platform,
   }
@@ -1219,6 +1222,30 @@ function registerIpcHandlers() {
   ipcMain.handle('local:test', handleLocalTest)
   ipcMain.handle('local:open-log', handleLocalOpenLog)
 
+  ipcMain.handle('updates:get', (event) => {
+    if (!isSettingsSender(event)) return { ok: false }
+    return {
+      ok: true,
+      status: updateManager?.getStatus() || {
+        state: 'unsupported',
+        version: null,
+        percent: 0,
+        message: 'Automatic updates are not available for this build.',
+      },
+    }
+  })
+
+  ipcMain.handle('updates:check', (event) => {
+    if (!isSettingsSender(event)) return { ok: false }
+    const started = updateManager?.check() || false
+    return { ok: started, status: updateManager?.getStatus() || null }
+  })
+
+  ipcMain.handle('updates:install', (event) => {
+    if (!isSettingsSender(event)) return { ok: false }
+    return { ok: updateManager?.quitAndInstall() || false }
+  })
+
   ipcMain.handle('settings:open-env', async (event) => {
     if (!isSettingsSender(event)) {
       return { ok: false, error: { message: 'Not available.' } }
@@ -1332,6 +1359,7 @@ async function initLocalEngine() {
       resourcesPath: process.resourcesPath,
       isPackaged: app.isPackaged,
       platform: process.platform,
+      arch: process.arch,
       env: process.env,
       fetchImpl: globalThis.fetch,
       logger: console,
@@ -1343,11 +1371,48 @@ async function initLocalEngine() {
 
     const status = await localEngine.init()
     console.log(
-      `[local] Engine home: ${localEngine.rootDir} · Python: ${status.python.version || 'missing'} · Model installed: ${status.installed}`,
+      `[local] Engine home: ${localEngine.rootDir} · Python: ${status.python.version || 'missing'}${status.python.isBundled ? ' (bundled)' : ''} · Model installed: ${status.installed}`,
     )
   } catch (error) {
     console.error('[local] Could not initialize the local engine manager:', error)
     localEngine = null
+  }
+}
+
+function initUpdateManager() {
+  try {
+    updateManager = new UpdateManager({
+      app,
+      platform: process.platform,
+      env: process.env,
+      logger: console,
+      onStatus: (status) => {
+        safeSend(settingsWindow, 'updates:status', status)
+      },
+      onDownloaded: (info) => {
+        const version = info?.version
+        showNotification(
+          'Dodoi update ready',
+          version
+            ? `Version ${version} has been downloaded. Click to restart and install it.`
+            : 'An update has been downloaded. Click to restart and install it.',
+          () => {
+            if (!updateManager?.quitAndInstall()) {
+              console.warn('[updates] The update is no longer ready to install.')
+            }
+          },
+        )
+      },
+    })
+
+    if (updateManager.start()) {
+      console.log('[updates] Automatic update checks enabled.')
+    } else {
+      console.log(`[updates] ${updateManager.getStatus().message}`)
+    }
+  } catch (error) {
+    console.error('[updates] Could not initialize the updater:', error)
+    updateManager = null
   }
 }
 
@@ -1364,6 +1429,7 @@ async function bootstrap() {
   registerIpcHandlers()
   await createOverlayWindow()
   createTray()
+  initUpdateManager()
 
   const shortcutOk = registerConfiguredShortcut({ announce: true })
   if (!shortcutOk) console.warn('[shortcut] Dodoi started without an active global shortcut.')
@@ -1398,6 +1464,7 @@ if (!hasSingleInstanceLock) {
     shortcutPaused = false
     releaseShortcut()
     automation?.stop()
+    updateManager?.stop()
     localEngine?.shutdownSync()
     localEngine = null
     overlayWindow = null

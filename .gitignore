@@ -1,6 +1,7 @@
 node_modules/
 dist/
 release/
+release-v0.2.0/
 .env
 *.log
 .DS_Store
@@ -8,3 +9,6 @@ release/
 local-models/*
 !local-models/.gitkeep
 !local-models/README.md
+resources/python-embedded/*
+!resources/python-embedded/.gitkeep
+!resources/python-embedded/README.md

@@ -1,0 +1,16 @@
+# Packages installed into the bundled CPython runtime.
+#
+# torch is installed separately by scripts/provision-python.cjs. The CPU-only
+# 2.2.2 build is used because it is the newest PyTorch release with macOS 12
+# and Intel Mac wheels, and it keeps the bundled runtime usable on every
+# platform Dodoi supports. The remaining pins are the newest versions that
+# still work with that torch release and CTranslate2's Transformers converter.
+ctranslate2==4.8.4
+transformers==4.49.0
+tokenizers==0.21.0
+huggingface_hub==0.29.3
+safetensors==0.4.5
+accelerate==1.2.1
+sentencepiece==0.2.0
+protobuf==5.29.3
+numpy==1.26.4

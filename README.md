@@ -1,14 +1,46 @@
 # Dodoi
 
-Dodoi is a floating AI translator that lives above every app. Press a global shortcut, type or paste text, hit **Ctrl + Enter**, and the translation is copied and inserted into the app you were using.
+**A floating AI translator that lives above every app.**
 
-Built with Electron, vanilla JavaScript, HTML/CSS, and Tailwind CSS. Works with any OpenAI-compatible chat completions API, or fully offline with the built-in NLLB-200 engine.
+[![Version](https://img.shields.io/badge/version-0.2.0-c9f76f?style=flat-square)](https://github.com/azzamalessa188-star/dodoi/releases/tag/v0.2.0)
+[![License](https://img.shields.io/badge/license-MIT-blue?style=flat-square)](LICENSE)
+[![Platforms](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-555?style=flat-square)](#install)
+[![Offline](https://img.shields.io/badge/offline-NLLB--200%203.3B-a8e857?style=flat-square)](#local-nllb-200-offline)
+[![Tests](https://img.shields.io/badge/tests-58%20passing-brightgreen?style=flat-square)](#development)
 
-## Preview
+Dodoi sits above every app. Press a global shortcut, type or paste text, hit **Ctrl + Enter**, and the translation is copied and inserted into the app you were using. It works with any OpenAI-compatible chat completions API, or fully offline with the built-in NLLB-200 engine.
 
-<img src="docs/overlay.png" alt="Dodoi floating translation overlay" width="760" />
+[**Download Dodoi v0.2.0**](https://github.com/azzamalessa188-star/dodoi/releases/tag/v0.2.0) · [Landing page](landing/) · [Build from source](#build-from-source)
+
+![Dodoi landing page](docs/landing.png)
+
+## What's new in v0.2.0
+
+- **Reliable translation extraction.** Reasoning models that return text in `reasoning` or `thinking` fields — or as an array of alternatives — now produce a translation instead of an empty result. Dodoi reads standard content first, then reasoning/thinking, then alternative arrays, and cleans the extracted text before pasting it.
+- **Complete 0.2.0 package set.** Portable Windows x64 build, macOS Intel and Apple Silicon zips, Linux AppImage, and a Debian package.
+- **Direct downloads on the landing page.** Each platform card now shows every available variant with its OS logo and a direct link to the matching release asset.
+- **Refreshed documentation.** New screenshots and a fully updated README for 0.2.0.
+- **Auto-update is intentionally not enabled in v0.2.0.** The release contains installers only — no `latest.yml`, `latest-mac.yml`, or `latest-linux.yml` manifests — so Dodoi will not download or install a new version in the background. See [Updates in v0.2.0](#updates-in-v020).
+
+## Screenshots
+
+### Floating translator
+
+The frameless overlay is always on top, follows the display with the cursor, and pastes the result into the app you came from.
+
+<img src="docs/overlay.png" alt="Dodoi floating translation overlay translating English text to Arabic" width="760" />
+
+### Settings
+
+Providers, target language, shortcut recording, Smart Fallback, launch at startup, and the offline engine — all in one window.
 
 <img src="docs/settings.png" alt="Dodoi settings window" width="900" />
+
+### Download hub
+
+Every platform and variant, with direct links to the v0.2.0 release assets.
+
+<img src="docs/download.png" alt="Dodoi landing page download cards for Windows, macOS, and Linux" width="900" />
 
 The standalone landing page lives in [`landing/`](landing/) — a self-contained static page that mirrors the app's dark, glassy visual language.
 
@@ -29,32 +61,34 @@ The standalone landing page lives in [`landing/`](landing/) — a self-contained
 - Connection testing against the provider's `/models` endpoint
 - Configurable target language, model, endpoint, and API key
 - API key masked in the UI and stored only in a local `.env` file
-- Tray menu and ready-to-ship installers for Windows, macOS, and Linux
-- Windows NSIS wizard with a custom install directory and selectable desktop/Start Menu shortcuts, macOS DMG with drag-to-Applications, Linux AppImage plus Debian package
+- Tray menu and ready-to-run builds for Windows, macOS, and Linux
+- Portable Windows x64 build, macOS Intel and Apple Silicon zips, Linux AppImage plus Debian package
+- Bundled CPython 3.12 runtime with pinned ML packages, so the local engine needs no system Python or manual `pip` install
+- Sequential translation extraction for reasoning models, so replies in `reasoning`/`thinking` fields or arrays are usable
 - Optional embedded NLLB model for offline-first installers, with the normal first-run download as a fallback
 
 ## Requirements
 
 - Node.js 20.19 or newer (22.12+ or 24 LTS recommended) and npm
 - Cloud translation: an OpenAI-compatible API key and endpoint
-- Offline translation: Python 3.10–3.13 (3.12 or 3.13 recommended), about 24 GB of free disk space for the first-time download and conversion, and 16 GB of RAM recommended (8 GB can fail during 3.3B conversion)
+- Offline translation: about 24 GB of free disk space for the first-time model download and conversion, and 14.5 GB of RAM recommended (a 16 GB machine with integrated graphics often reports about 15.7 GB; 8 GB can fail during 3.3B conversion). Official installers include a CPython 3.12 runtime; source builds without it fall back to a system Python 3.10–3.13.
 - Internet access once if you want to download the offline model
 
 ## Install
 
-Download from the [v0.1.0 GitHub Release](https://github.com/azzamalessa188-star/dodoi/releases/tag/v0.1.0), use the direct download buttons on the [landing page](landing/), or build from source. The CI workflow in `.github/workflows/build.yml` produces these artifacts:
+Download from the [v0.2.0 GitHub Release](https://github.com/azzamalessa188-star/dodoi/releases/tag/v0.2.0), use the direct download buttons on the [landing page](landing/), or build from source. These are the exact artifacts attached to v0.2.0:
 
 | Platform | Artifact | Installation |
 | --- | --- | --- |
-| Windows 10/11 x64 | `Dodoi-Setup-0.1.0-x64.exe` | Run the NSIS wizard, choose an install directory, and select the desktop and Start Menu shortcuts you want. |
-| macOS 12+ Apple Silicon | `Dodoi-0.1.0-arm64.zip` (CI also produces a `.dmg`) | Extract the zip, drag **Dodoi** to **Applications**, then launch it. You can move the app to another folder afterwards. |
-| macOS 12+ Intel | `Dodoi-0.1.0-x64.zip` (CI also produces a `.dmg`) | Extract the zip, drag **Dodoi** to **Applications**, then launch it. You can move the app to another folder afterwards. |
-| Linux x64 | `Dodoi-0.1.0-x86_64.AppImage` | `chmod +x Dodoi-0.1.0-x86_64.AppImage`, then run it. No installation is required. |
-| Ubuntu/Debian x64 | `Dodoi-0.1.0-amd64.deb` | `sudo apt install ./Dodoi-0.1.0-amd64.deb` |
+| Windows 10/11 x64 | [`Dodoi-Setup-0.2.0-x64.zip`](https://github.com/azzamalessa188-star/dodoi/releases/download/v0.2.0/Dodoi-Setup-0.2.0-x64.zip) | Extract the zip and run `Dodoi.exe`. Portable build — no installer or administrator rights required. |
+| macOS 12+ Apple Silicon | [`Dodoi-0.2.0-arm64.zip`](https://github.com/azzamalessa188-star/dodoi/releases/download/v0.2.0/Dodoi-0.2.0-arm64.zip) | Extract the zip, drag **Dodoi** to **Applications**, then launch it. |
+| macOS 12+ Intel | [`Dodoi-0.2.0-x64.zip`](https://github.com/azzamalessa188-star/dodoi/releases/download/v0.2.0/Dodoi-0.2.0-x64.zip) | Extract the zip, drag **Dodoi** to **Applications**, then launch it. |
+| Linux x64 | [`Dodoi-0.2.0-x86_64.AppImage`](https://github.com/azzamalessa188-star/dodoi/releases/download/v0.2.0/Dodoi-0.2.0-x86_64.AppImage) | `chmod +x Dodoi-0.2.0-x86_64.AppImage`, then run it. No installation required. |
+| Ubuntu/Debian x64 | [`Dodoi-0.2.0-amd64.deb`](https://github.com/azzamalessa188-star/dodoi/releases/download/v0.2.0/Dodoi-0.2.0-amd64.deb) | `sudo apt install ./Dodoi-0.2.0-amd64.deb` |
 
-Release builds are signed and notarized when the repository has the matching certificates and Apple credentials configured; otherwise the CI workflow still uploads usable unsigned artifacts. On macOS, an unsigned local build may require right-clicking the app and choosing **Open** the first time. On Linux, if FUSE 2 is unavailable, run the AppImage with `APPIMAGE_EXTRACT_AND_RUN=1`.
+The v0.2.0 artifacts are unsigned. On macOS, right-click the app and choose **Open** the first time. On Linux, if FUSE 2 is unavailable, run the AppImage with `APPIMAGE_EXTRACT_AND_RUN=1`.
 
-Windows uninstall removes Dodoi's app data and its launch-at-startup registry values. macOS and Linux uninstallers leave user data in place; remove `~/Library/Application Support/Dodoi` or `~/.config/Dodoi` by hand if you also want to delete settings, the Python environment, and any downloaded model. If **Launch on startup** was enabled on Linux, also remove `$XDG_CONFIG_HOME/autostart/dodoi.desktop` (normally `~/.config/autostart/dodoi.desktop`).
+The release does **not** include update manifests. See [Updates in v0.2.0](#updates-in-v020).
 
 ### Build from source
 
@@ -83,6 +117,19 @@ npm start
 ```
 
 To configure everything without touching the file, open **Settings** from the tray menu, the overlay's gear button, or the target-language chip.
+
+## Updates in v0.2.0
+
+**Auto-update is not enabled in v0.2.0.** The GitHub release publishes the five installer artifacts listed above, but no `latest.yml`, `latest-mac.yml`, or `latest-linux.yml` files. Without those manifests there is no update feed for the packaged app to follow, so Dodoi does not download or install a new version in the background.
+
+Upgrade manually:
+
+1. Download the new build for your platform from [Releases](https://github.com/azzamalessa188-star/dodoi/releases).
+2. Quit Dodoi from the tray menu.
+3. Replace the old app with the new one.
+4. Launch Dodoi again. Settings, the Python runtime, and any downloaded model stay in the per-user data directory and are reused.
+
+The updater source remains in the repository for future releases, but it is inactive for this version because no update metadata is published.
 
 ## Usage
 
@@ -166,30 +213,33 @@ Choose **Local · NLLB-200 (offline)** from the provider menu when you want tran
 
 ### First-time setup for download builds
 
-1. Install Python 3.10–3.13 and make sure `python3 --version` works. On Linux, install `python3-venv` if your distribution separates it.
-2. Open **Settings → Provider → Local · NLLB-200 (offline)**.
-3. Press **Download & Convert**. Dodoi creates an isolated virtual environment, downloads the 17.6 GB PyTorch source model from Hugging Face, converts it to a 3.5 GB CTranslate2 INT8 model, and removes the source weights after a successful conversion. Interrupted downloads resume where they stopped.
-4. Press **Start engine**. The first load can take a minute while the INT8 weights move into RAM.
+1. Open **Settings → Provider → Local · NLLB-200 (offline)**.
+2. Press **Download & Convert**. Dodoi uses its bundled CPython 3.12 runtime with the ML packages already installed. Builds without the runtime (for example a local `npm run dist` without provisioning) create an isolated virtual environment from a system Python 3.10–3.13 instead. The app downloads the 17.6 GB PyTorch source model from Hugging Face, converts it to a 3.5 GB CTranslate2 INT8 model, and removes the source weights after a successful conversion. Interrupted downloads resume where they stopped.
+3. Press **Start engine**. The first load can take a minute while the INT8 weights move into RAM.
 
-The Settings panel shows the current stage, byte progress, Python version, model size, available memory, and disk-space warnings. A low-memory machine can still download the model, but 3.3B conversion is likely to fail below 16 GB of RAM.
+The Settings panel shows the current stage, byte progress, Python runtime, model size, available memory, and disk-space warnings. A low-memory machine can still download the model, but 3.3B conversion is likely to fail below 14.5 GB of total RAM.
 
 ### Bundled model builds
 
 Dodoi can embed the converted model in the installer. Release builders stage the model under `local-models/nllb-200-3.3B-int8/` before packaging; `npm run verify:model` checks that the directory looks complete. When present, the model is copied to `resources/local-engine/models/` and the app prefers it over any copy in `userData`.
 
-A bundled build still creates its Python virtual environment and installs the ML packages on the first **Start engine** (or when a background autostart warm-up needs them). That keeps the installer small enough for the Electron portion to stay ordinary while the multi-gigabyte model ships as read-only application data.
+Official installers also embed the Python runtime, so a bundled-model build needs no first-start package installation. Builds without `resources/python-embedded/` still fall back to a system Python virtual environment.
 
 ### Storage and lifecycle
 
-The Python runtime and logs live under Electron's `userData` directory. A downloaded model is stored there too; a bundled model stays read-only inside the installed app.
+The Python runtime, fallback virtual environment, logs, and downloaded models live under Electron's `userData` directory. The bundled runtime and a bundled model stay read-only inside the installed app.
 
 ```text
 userData/local-engine/
-  venv/                         Isolated Python runtime and ML packages
+  venv/                         Isolated runtime when using the system-Python fallback
   models/
     nllb-200-3.3B-source/       Temporary source weights (removed after conversion)
     nllb-200-3.3B-int8/         Converted model from Download & Convert
   engine.log                    Runtime, download, and conversion log
+
+<install directory>/resources/python-embedded/
+  runtime.json                  Provisioned runtime manifest
+  bin/python3 or python.exe     Bundled CPython 3.12 and ML packages
 
 <install directory>/resources/local-engine/models/
   nllb-200-3.3B-int8/           Read-only model shipped by a bundled installer
@@ -216,13 +266,17 @@ Smart Fallback is on by default. If the local engine is stopped, not downloaded,
 
 ### Windows
 
-Dodoi ships as a standard NSIS installer. The wizard lets you choose the installation directory and whether to create desktop and Start Menu shortcuts; both are selected by default. Uninstalling from **Settings → Apps → Installed apps** removes the application files, remaining shortcuts, per-user app data, and the launch-at-startup registry values.
+The published v0.2.0 build is a portable x64 zip. Extract it anywhere and run `Dodoi.exe`; no installer, elevation prompt, or registry entry is required. Settings and local-engine data live in `%APPDATA%\Dodoi`. To remove Dodoi completely, quit it, delete the extracted folder, and delete `%APPDATA%\Dodoi` if you also want to remove settings and downloaded models.
+
+The source tree can still produce an NSIS installer with `npm run dist:win`. Building that installer requires Windows or Wine; the v0.2.0 release uses the portable zip.
 
 Automatic paste uses PowerShell and the Win32 foreground-window APIs. No extra installation is required, and Dodoi does not need administrator rights. A background PowerShell watcher tracks the last non-Dodoi window.
 
 ### macOS
 
-The DMG contains **Dodoi** and an **Applications** shortcut. Drag the app to Applications, or copy it anywhere you like; the app is self-contained. Builds signed with a Developer ID and notarized by Apple open normally. If you build locally without credentials, right-click the app and choose **Open** the first time. If **Launch on startup** was enabled, turn it off in Settings before dragging Dodoi to the Trash so macOS does not keep a stale login item.
+The v0.2.0 release ships separate zips for Apple Silicon and Intel. Extract the zip and drag **Dodoi** to Applications, or run it from any folder; the app is self-contained. The builds are unsigned, so Gatekeeper may block the first launch — right-click the app and choose **Open**, or clear the quarantine flag with `xattr -dr com.apple.quarantine /Applications/Dodoi.app`.
+
+A DMG target remains available for local and CI builds. If **Launch on startup** was enabled, turn it off in Settings before moving Dodoi to the Trash so macOS does not keep a stale login item.
 
 Dodoi runs as a menu bar app. Automatic paste uses AppleScript and **requires Accessibility permission**:
 
@@ -237,10 +291,10 @@ If permission is missing, translations are still copied to the clipboard.
 Use the AppImage for a portable install or the `.deb` on Ubuntu/Debian. The `.deb` installs a desktop entry under `/usr/share/applications`; the AppImage carries an embedded desktop entry. Both support **Launch on startup** through `~/.config/autostart/dodoi.desktop`.
 
 ```bash
-chmod +x Dodoi-0.1.0-x86_64.AppImage
-./Dodoi-0.1.0-x86_64.AppImage
+chmod +x Dodoi-0.2.0-x86_64.AppImage
+./Dodoi-0.2.0-x86_64.AppImage
 
-sudo apt install ./Dodoi-0.1.0-amd64.deb
+sudo apt install ./Dodoi-0.2.0-amd64.deb
 sudo apt remove dodoi       # later removal; user data is kept
 ```
 
@@ -268,16 +322,27 @@ sudo pacman -S xdotool      # Arch
 | `npm run build` | Build renderer assets into `dist/` |
 | `npm run icons` | Regenerate app icons, tray icons, and the DMG background from the brand mark script |
 | `npm run verify:model` | Validate a model staged under `local-models/` |
+| `npm run python:provision` | Download the pinned CPython 3.12 runtime and ML packages for this platform |
+| `npm run verify:packaged` | Check that a packaged app contains a working bundled Python runtime |
+| `npm run merge:update-manifests` | Merge per-architecture `latest-mac.yml` files |
 | `npm run dist` | Build an installer for the current platform |
-| `npm run dist:win` | Build the x64 Windows NSIS installer |
-| `npm run dist:mac` | Build x64 and arm64 macOS DMGs |
+| `npm run dist:embedded` | Provision the runtime, then build for the current platform |
+| `npm run dist:win` | Build the x64 Windows NSIS installer (requires Windows or Wine) |
+| `npm run dist:mac` | Build a macOS DMG and ZIP for the current architecture |
+| `npm run dist:mac:x64` | Build the Intel macOS DMG and ZIP |
+| `npm run dist:mac:arm64` | Build the Apple Silicon macOS DMG and ZIP |
+| `npm run dist:mac:all` | Build both macOS architectures in one run (requires both provisioned runtimes) |
 | `npm run dist:linux` | Build the Linux AppImage and Debian package |
 
-Build installers on their target operating system (or in CI with the matching runner). Output goes to `release/`. Artifact names include the version and architecture, for example `Dodoi-Setup-0.1.0-x64.exe`, `Dodoi-0.1.0-arm64.dmg`, `Dodoi-0.1.0-x86_64.AppImage`, and `Dodoi-0.1.0-amd64.deb`.
+Build installers on their target operating system (or in CI with the matching runner). Output goes to `release/`. Artifact names include the version and architecture, for example `Dodoi-Setup-0.2.0-x64.zip`, `Dodoi-0.2.0-arm64.zip`, `Dodoi-0.2.0-x86_64.AppImage`, and `Dodoi-0.2.0-amd64.deb`.
+
+`npm run python:provision` downloads python-build-standalone for the current OS/architecture, verifies its SHA-256 checksum, and installs the pinned packages from `scripts/local/requirements-runtime.txt`. The result is stored in `resources/python-embedded/<os>-<arch>` and is intentionally gitignored. Run `npm run dist:embedded` to provision and package in one step. A plain `npm run dist` still works without it and produces a build that uses the system-Python fallback.
 
 ### Continuous integration
 
-`.github/workflows/build.yml` runs the test suite and a native build on `windows-latest`, `macos-latest`, and `ubuntu-latest`. It runs on manual dispatch and on tags matching `v*`, then uploads the installers as workflow artifacts. Add these repository secrets to enable signing and notarization:
+`.github/workflows/build.yml` runs the test suite and a native build on Windows x64, macOS x64 (`macos-15-intel`), macOS arm64 (`macos-15`), and Linux x64. Each job provisions its own Python runtime first. On tags matching `v*`, a final job merges the macOS update metadata, generates `SHA256SUMS.txt`, and publishes the installers plus any `latest*.yml` metadata to the matching GitHub Release. Manual dispatches only upload workflow artifacts.
+
+For v0.2.0 the release was assembled with installers only; no update manifests were attached, so the release does not activate the in-app updater. Add these repository secrets to enable signing and notarization:
 
 | Secret | Purpose |
 | --- | --- |
@@ -294,7 +359,7 @@ Without the secrets the workflow still builds usable unsigned artifacts; electro
 
 Stage the converted model at `local-models/nllb-200-3.3B-int8/` before running any `dist:*` command, then run `npm run verify:model`. electron-builder copies it into `resources/local-engine/models/` and `LocalEngine` prefers that read-only copy. If the directory is absent, the installer is built without a model and first-run **Download & Convert** remains the normal flow. The model is intentionally gitignored; see `local-models/README.md`.
 
-The Linux build also produces an unpacked app at `release/linux-unpacked/dodoi`. If FUSE 2 is unavailable (common in WSL and newer Ubuntu releases), run the AppImage with `APPIMAGE_EXTRACT_AND_RUN=1 ./release/Dodoi-0.1.0-x86_64.AppImage` or use the unpacked binary instead.
+The Linux build also produces an unpacked app at `release/linux-unpacked/dodoi`. If FUSE 2 is unavailable (common in WSL and newer Ubuntu releases), run the AppImage with `APPIMAGE_EXTRACT_AND_RUN=1 ./release/Dodoi-0.2.0-x86_64.AppImage` or use the unpacked binary instead.
 
 ### Project layout
 
@@ -307,18 +372,36 @@ electron/
   lib/translator.cjs    Cloud requests, local translation, Smart Fallback
   lib/local-engine.cjs  Python runtime, model preparation, local server lifecycle
   lib/local-languages.cjs  NLLB language mapping and source detection
+  lib/updater.cjs      Update check and install state (inactive for v0.2.0)
   lib/startup.cjs       Login-item and XDG autostart registration
   lib/automation.cjs    Window capture and paste automation per platform
 build/                  App icons, DMG background, macOS entitlements, NSIS hooks
+docs/                   README screenshots
+landing/                Standalone static landing page with direct downloads
 local-models/           Optional staged NLLB model for bundled installers
+resources/python-embedded/  Provisioned CPython 3.12 runtime (gitignored)
 src/renderer/
   overlay.js            Floating overlay behavior
   settings.js           Settings form, free-model discovery, local engine controls, shortcut recorder
   styles.css            Overlay and settings visual system
 test/                   Node test files
 scripts/local/          NLLB download/conversion and localhost server workers
-scripts/                Icon generation and bundled-model verification
+scripts/                Icon generation, runtime provisioning, and build verification
 ```
+
+## Changelog
+
+### v0.2.0 — 2026-10-29
+
+- Fixed empty translations with reasoning models by extracting content sequentially: standard content, then `reasoning`/`thinking`, then alternative arrays, with a final cleanup pass.
+- Added a complete 0.2.0 artifact set: portable Windows x64 zip, macOS arm64/x64 zips, Linux AppImage, and Debian package.
+- Redesigned the landing page download section with per-OS logos and every available variant linked directly.
+- Refreshed the README with new screenshots of the landing page, download hub, overlay, and settings.
+- Auto-update intentionally not activated: no update manifests are published for this release.
+
+### v0.1.0 — 2026-10-29
+
+- First public release with the floating translator, cloud provider presets, OpenRouter free-model routing, Smart Fallback, and the offline NLLB-200 engine.
 
 ## Security and privacy
 
@@ -326,7 +409,7 @@ scripts/                Icon generation and bundled-model verification
 - The key is written to `.env` with owner-only permissions where the filesystem supports them.
 - Cloud translation text is sent directly from the main process to the provider you configure. Dodoi has no telemetry or intermediary server.
 - Local translation never sends text off the device. The local server listens only on `127.0.0.1`, uses a random per-run bearer token, and is killed when the engine stops or Dodoi quits.
-- When the model is not bundled, the only model-related network traffic is the first-time Hugging Face download. The isolated Python runtime fetches its packages from PyPI and the PyTorch CPU index when it is first created. Bundled installers skip the model download entirely; after setup, the local engine works without internet access.
+- When the model is not bundled, the only model-related network traffic is the first-time Hugging Face download. Official installers already contain the Python runtime and ML packages, so they do not fetch packages at runtime. Builds using the system-Python fallback fetch packages from PyPI and the PyTorch CPU index when the virtual environment is first created. Bundled installers skip the model download entirely; after setup, the local engine works without internet access.
 - Window navigation and new windows are blocked in both renderer processes.
 
 ## Troubleshooting
@@ -343,26 +426,32 @@ Some compatible APIs do not implement `/models`. The connection test relies on t
 **The OpenRouter free-model list does not load.**
 The picker uses the public `/models` endpoint, so a temporary network or OpenRouter outage can hide the list. `openrouter/free` still works and requires no model list. Use **Refresh** in the free-model row to try again.
 
+**A reasoning model returns an empty translation in an older build.**
+Update to v0.2.0. It extracts text from standard content, reasoning/thinking fields, and alternative arrays in order, then cleans the result before copying it.
+
 **Download & Convert fails while installing Python packages.**
-Use Python 3.12 or 3.13. Very new interpreters such as 3.14 may not have matching PyTorch/CTranslate2 wheels yet. On Linux, install `python3-venv`; then reopen Settings and try again. The engine log records the exact pip output.
+This only affects builds using the system-Python fallback; official installers ship the packages. In a fallback build, use Python 3.12 or 3.13. Very new interpreters such as 3.14 may not have matching PyTorch/CTranslate2 wheels yet. On Linux, install `python3-venv`; then reopen Settings and try again. The engine log records the exact pip output.
+
+**The bundled Python runtime is missing or incomplete.**
+Reinstall Dodoi from an official build. Developers should run `npm run python:provision` before `npm run dist`, and `npm run verify:packaged` after packaging. Setting `DODOI_DISABLE_BUNDLED_PYTHON=1` forces the system-Python fallback for debugging.
 
 **The local engine fails to start or is killed during loading.**
-NLLB-200 3.3B INT8 needs roughly 3.5 GB just for the model and more while loading. Close memory-heavy apps, or use a machine with at least 16 GB of RAM. The engine log and the Settings status panel show the failure.
+NLLB-200 3.3B INT8 needs roughly 3.5 GB just for the model and more while loading. Close memory-heavy apps, or use a machine with at least 14.5 GB of total RAM (16 GB machines with integrated graphics often report about 15.7 GB). The engine log and the Settings status panel show the failure.
 
 **Translations work, but they unexpectedly go to the cloud.**
 The local engine is probably stopped or still starting. Check the badge in the local panel, press **Start engine**, or turn off Smart Fallback if you want local failures to surface instead. The fallback summary shows which cloud connection will be used.
 
 **Where is the local model stored?**
-A model downloaded with **Download & Convert** lives under `userData/local-engine/`, as shown in [Local NLLB-200](#local-nllb-200-offline). A bundled model lives under the app's `resources/local-engine/models/` directory and is read-only. Use **Open log** to jump to the `userData` engine folder. Deleting `local-engine/` removes the Python environment and any downloaded model, and the next **Download & Convert** starts fresh; it does not remove a bundled model.
+A model downloaded with **Download & Convert** lives under `userData/local-engine/`, as shown in [Local NLLB-200](#local-nllb-200-offline). A bundled model lives under the app's `resources/local-engine/models/` directory and is read-only. Use **Open log** to jump to the `userData` engine folder. Deleting `local-engine/` removes any fallback virtual environment and downloaded model, and the next **Download & Convert** starts fresh; it does not remove the bundled Python runtime or a bundled model.
 
 **Settings says Bundled · INT8, but Start engine still downloads packages.**
-Only the model is bundled. The first start still creates an isolated Python environment and installs CTranslate2, Transformers, and PyTorch. The Settings progress panel names this stage; later starts reuse the environment.
+That should not happen in a current official build: the Python runtime, PyTorch, and the other ML packages are embedded. If it does, the runtime was not included in that installer. Reinstall an official build or run `npm run python:provision` before packaging locally.
 
 **macOS says Dodoi cannot be opened or is damaged.**
-Unsigned local builds are blocked by Gatekeeper. Right-click the app and choose **Open**, or clear the quarantine flag with `xattr -dr com.apple.quarantine /Applications/Dodoi.app`. Official signed and notarized builds do not need this.
+The v0.2.0 builds are unsigned and blocked by Gatekeeper on first launch. Right-click the app and choose **Open**, or clear the quarantine flag with `xattr -dr com.apple.quarantine /Applications/Dodoi.app`.
 
-**The Windows uninstaller removed my settings and model.**
-That is intentional for a clean uninstall; `deleteAppDataOnUninstall` is enabled. Back up your `.env` and `local-engine/` folder first if you plan to reinstall and keep them.
+**How do I update Dodoi?**
+Quit Dodoi, download the new build from [Releases](https://github.com/azzamalessa188-star/dodoi/releases), replace the old app, and launch it again. v0.2.0 does not install updates in the background.
 
 **The app seems to stay open after closing Settings.**
 That is expected: Dodoi lives in the tray. Use **Quit Dodoi** from the tray menu to exit.

@@ -123,6 +123,7 @@ let freeModelLoading = false
 let freeModelError = ''
 let freeModelFetchedAt = 0
 let localStatus = null
+let lastUpdateNotice = ''
 let localAction = ''
 let localActionSequence = 0
 let localTestSequence = 0
@@ -500,9 +501,11 @@ function renderLocalStatus() {
     localPython,
     status.python?.found
       ? status.python.recommended
-        ? `Python ${status.python.version}${status.python.isVenv ? ' · venv' : ''}`
+        ? status.python.isBundled
+          ? `Bundled Python ${status.python.version}`
+          : `Python ${status.python.version}${status.python.isVenv ? ' · venv' : ''}`
         : `Python ${status.python.version} · use 3.12/3.13`
-      : 'Python 3.10+ not found',
+      : 'Bundled runtime missing',
     status.python?.found ? (status.python.recommended ? '' : 'warning') : 'error',
   )
 
@@ -540,7 +543,7 @@ function renderLocalStatus() {
 
   if (status.memory?.warning) {
     localMemoryWarning.hidden = false
-    localMemoryWarning.textContent = `This machine has ${formatBytes(status.memory.totalBytes)} RAM. At least 16 GB is recommended for conversion and inference.`
+    localMemoryWarning.textContent = `This machine has ${formatBytes(status.memory.totalBytes)} RAM. At least ${formatBytes(status.memory.recommendedBytes)} is recommended for conversion and inference; integrated graphics may reserve part of a 16 GB machine.`
   } else {
     localMemoryWarning.hidden = true
   }
@@ -1709,5 +1712,17 @@ if (!api) {
     if (!status) return
     localStatus = status
     renderLocalStatus()
+  })
+
+  api.onUpdateStatus((status) => {
+    if (!status || status.state !== 'downloaded') return
+    const version = status.version || ''
+    if (lastUpdateNotice === (version || 'downloaded')) return
+    lastUpdateNotice = version || 'downloaded'
+    showToast(
+      version
+        ? `Dodoi ${version} is ready. Restart Dodoi to install it.`
+        : 'The Dodoi update is ready. Restart Dodoi to install it.',
+    )
   })
 }
